@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="background">#d0000000</color>
+    <color name="fill">#ff9a7967</color>
+    <color name="ball">#ffffffff</color>
+    <color name="solidWall">#ffc98bfd</color>
+    <color name="directionField">#ffcbffd3</color>
+
+    <color name="menu_background">#ff5d5d5d</color>
+    <color name="menu_text">#ffe3e3e3</color>
+
+</resources>
