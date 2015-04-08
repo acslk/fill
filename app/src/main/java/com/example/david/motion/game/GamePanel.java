@@ -2,7 +2,6 @@ package com.example.david.motion.game;
 
 import android.content.Intent;
 import android.graphics.Canvas;
-import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -75,8 +74,6 @@ public class GamePanel  implements SensorEventListener, View.OnTouchListener {
         }
     }
 
-    private static float screenWidth, screenHeight; // in map unit, exclude space taken by the ball
-
     GameActivity parentActivity;
     SurfaceHolder surfaceHolder;
 
@@ -86,10 +83,6 @@ public class GamePanel  implements SensorEventListener, View.OnTouchListener {
     public GamePanel (GameActivity parentActivity) {
         this.parentActivity = parentActivity;
         pool = Executors.newFixedThreadPool(2);
-        Point size = new Point();
-        parentActivity.getWindowManager().getDefaultDisplay().getSize(size);
-        screenWidth = GameMap.unit(size.x);
-        screenHeight = GameMap.unit(size.y);
     }
 
     public void setSurfaceHolder(SurfaceHolder surfaceHolder) {
@@ -111,8 +104,8 @@ public class GamePanel  implements SensorEventListener, View.OnTouchListener {
         collectables.add(new ColorObj(100, 200, 50, 0, 0));
         collectables.add(new ColorObj(20, 200, 0, 50, 0));
 
-        gameMap = new GameMap(parentActivity.getResources().getDimension(R.dimen.ballDiameter),
-                800, 800, collidables, fields, collectables);
+        gameMap = new GameMap(parentActivity.getResources().getDimension(R.dimen.ballDiameter), 800, 800);
+        gameMap.loadStuff(collidables, fields, collectables);
     }
 
     public void updateMap () {
@@ -153,52 +146,33 @@ public class GamePanel  implements SensorEventListener, View.OnTouchListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        Log.i("Motion", event.toString());
-        if (event.getAction() == MotionEvent.ACTION_UP){
-            pauseGame();
-            parentActivity.showPauseDialog();
-            Log.i("Motion", "show dialog");
+        Log.i("Motion", event.toString() + " " + v.getId());
+        switch (v.getId()) {
+            case R.id.gameSurfaceView :
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                }
+                break;
+            case R.id.statusBar:
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    pauseGame();
+                    parentActivity.showPauseDialog();
+                    Log.i("Motion", "show dialog");
+                }
+                break;
         }
         return true;
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        float ax = event.values[1]/Ball.ACCELERATION_DIV_FACTOR;
-        float ay = event.values[0]/Ball.ACCELERATION_DIV_FACTOR - Ball.ACCELERATION_Y_OFFSET;
-
-        if (ax > Ball.MAXA)
-            ax = Ball.MAXA;
-        else if (ax < -Ball.MAXA)
-            ax = -Ball.MAXA;
-        else if (ax > Ball.FRICTION && ax < Ball.MINA)
-            ax = Ball.MINA;
-        else if (ax < -Ball.FRICTION && ax > -Ball.MINA)
-            ax = -Ball.MINA;
-
-        if (ay > Ball.MAXA)
-            ay = Ball.MAXA;
-        else if (ay < -Ball.MAXA)
-            ay = -Ball.MAXA;
-        else if (ay > Ball.FRICTION && ay < Ball.MINA)
-            ay = Ball.MINA;
-        else if (ay < -Ball.FRICTION && ay > -Ball.MINA)
-            ay = -Ball.MINA;
-
-        gameMap.setAcceleration(ax, ay);
+        gameMap.ball.updateAcceleration(event);
     }
 
     @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
-    }
-
-    public static float getScreenWidth () {
-        return screenWidth;
-    }
-
-    public static float getScreenHeight () {
-        return screenHeight;
+    public void setScreen(float width, float height) {
+        gameMap.loadScreen(width, height);
     }
 
 }

@@ -2,18 +2,11 @@ package com.example.david.motion.collidable;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.NinePatchDrawable;
-import android.util.Log;
-import android.view.View;
-import android.widget.RelativeLayout;
 
 import com.example.david.motion.R;
 import com.example.david.motion.game.Ball;
 import com.example.david.motion.game.GameMap;
-import com.example.david.motion.game.GamePanel;
-import com.example.david.motion.game.GameSurfaceView;
 
 /**
  * Created by David on 2015-03-05.

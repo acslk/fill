@@ -6,26 +6,29 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 
+import com.example.david.motion.R;
 import com.example.david.motion.fragments.PauseDialogFragment;
 import com.example.david.motion.game.GamePanel;
-import com.example.david.motion.game.GameSurfaceView;
 
 import java.io.IOException;
 
 
-public class GameActivity extends FullScreenActivity {
+public class GameActivity extends FullScreenActivity implements SurfaceHolder.Callback {
 
+    SurfaceView surfaceView;
     SensorManager sensorManager;
-    GameSurfaceView gameView;
     public GamePanel gamePanel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_game);
+        Log.i("Motion", "after setContent");
+
         gamePanel = new GamePanel(this);
-
-
         try {
             gamePanel.loadMap();
         } catch (IOException e) {
@@ -33,13 +36,13 @@ public class GameActivity extends FullScreenActivity {
             finish();
         }
         Log.i("Motion", "map loaded");
-        gameView = new GameSurfaceView(this,gamePanel);
-        Log.i("Motion", "gameSurfaceView created");
-        gameView.setClickable(true);
-        gameView.setOnTouchListener(gamePanel);
-        Log.i("Motion", "before setContent");
-        setContentView(gameView);
-        Log.i("Motion", "after setContent");
+
+        surfaceView = (SurfaceView)findViewById(R.id.gameSurfaceView);
+        gamePanel.setSurfaceHolder(surfaceView.getHolder());
+        surfaceView.getHolder().addCallback(this);
+
+        surfaceView.setOnTouchListener(gamePanel);
+        findViewById(R.id.statusBar).setOnTouchListener(gamePanel);
 
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
     }
@@ -67,6 +70,24 @@ public class GameActivity extends FullScreenActivity {
     public void onBackPressed() {
         gamePanel.pauseGame();
         showPauseDialog();
+    }
+
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        gamePanel.setScreen(surfaceView.getWidth(), surfaceView.getHeight());
+        gamePanel.resumeGame();
+        Log.i("Motion", "gamepanel resumeGame finished");
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        gamePanel.pauseGame();
     }
 
     public void showPauseDialog () {

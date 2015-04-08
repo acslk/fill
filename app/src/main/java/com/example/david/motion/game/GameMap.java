@@ -6,7 +6,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.example.david.motion.GameColor;
 import com.example.david.motion.R;
+import com.example.david.motion.Utils;
 import com.example.david.motion.collectable.Collectable;
 import com.example.david.motion.collidable.Collidable;
 import com.example.david.motion.field.Field;
@@ -24,8 +26,11 @@ public class GameMap {
     private static int foundationColor;
     private static int fillColor;
 
+    private GameColor gameColor;
+    private int targetR, targetG, targetB;
     private Paint foundationPaint, backgroundPaint;
     private float startX, startY;
+    private float screenWidth, screenHeight;
     private boolean fullWidth = true, fullHeight = true;
 
     public final float width, height; // in map unit
@@ -38,36 +43,44 @@ public class GameMap {
     boolean levelPassed = false;
     String failMessage = "uninitialized";
 
-    public GameMap (float ballSize, float width, float height, List<Collidable> collidables,
-                    List<Field> fields, List<Collectable> collectables) {
+    public GameMap (float ballSize, float width, float height) {
 
         ball = new Ball(100, 100, ballSize);
         lastBall = new Ball(ball);
         this.width = width;
         this.height = height;
-        this.collidables = collidables;
-        this.fields = fields;
-        this.collectables = collectables;
 
         startX = startY = 0;
         foundationPaint = new Paint();
         foundationPaint.setColor(foundationColor);
         backgroundPaint = new Paint();
         backgroundPaint.setColor(backgroundColor);
-
-        if (width < GamePanel.getScreenWidth()) {
-            startX = (GamePanel.getScreenWidth() - width)/2;
-            fullWidth = false;
-        }
-        if (height < GamePanel.getScreenHeight()) {
-            startY = (GamePanel.getScreenHeight() - height)/2;
-            fullHeight = false;
-        }
     }
 
-    public synchronized void setAcceleration (float ax, float ay) {
-        ball.ax = ax;
-        ball.ay = ay;
+    public void loadColor (GameColor currentColor, int targetR, int targetG, int targetB) {
+        this.gameColor = currentColor;
+        this.targetR = GameColor.bound(targetR);
+        this.targetG = GameColor.bound(targetG);
+        this.targetB = GameColor.bound(targetB);
+    }
+
+    public void loadStuff (List<Collidable> collidables, List<Field> fields, List<Collectable> collectables) {
+        this.collidables = collidables;
+        this.fields = fields;
+        this.collectables = collectables;
+    }
+
+    public void loadScreen(float screenWidth, float screenHeight) {
+        this.screenWidth = unit(screenWidth);
+        this.screenHeight = unit(screenHeight);
+        if (width < this.screenWidth) {
+            startX = (this.screenWidth - width)/2;
+            fullWidth = false;
+        }
+        if (height < this.screenHeight) {
+            startY = (this.screenHeight - height)/2;
+            fullHeight = false;
+        }
     }
 
     public synchronized void updateStatus () {
@@ -109,7 +122,6 @@ public class GameMap {
     public synchronized void setDisplayPosition () {
 
         if (fullWidth) {
-            float screenWidth = GamePanel.getScreenWidth();
             if (ball.x > screenWidth / 2 && ball.x < width - screenWidth / 2) {
                 startX = screenWidth / 2 - ball.x;
             } else if (ball.x <= screenWidth / 2) {
@@ -120,7 +132,6 @@ public class GameMap {
         }
 
         if (fullHeight) {
-            float screenHeight = GamePanel.getScreenHeight();
             if (ball.y > screenHeight / 2 && ball.y < height - screenHeight / 2) {
                 startY = screenHeight / 2 - ball.y;
             } else if (ball.y <= screenHeight / 2) {

@@ -4,8 +4,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
-import android.view.View;
-import android.widget.RelativeLayout;
 
 import com.example.david.motion.R;
 import com.example.david.motion.game.Ball;
@@ -16,7 +14,7 @@ import com.example.david.motion.game.GameMap;
 */
 public class FragileBlock extends Collidable {
 
-    private static final float THRESHOLD = Ball.MAXVX;
+    private static final float THRESHOLD = Ball.Default_MAXV;
     private static Drawable baseImage;
     boolean fading = false;
     int alpha = 255;

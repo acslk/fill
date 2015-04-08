@@ -48,6 +48,7 @@ public abstract class GameObj {
         return true;
     }
 
+
     protected Rect getOffsetRect (float mapX, float mapY) {
         return new Rect(GameMap.px(x + mapX), GameMap.px(y + mapY),
                 GameMap.px(x + width + mapX), GameMap.px(y + height + mapY));

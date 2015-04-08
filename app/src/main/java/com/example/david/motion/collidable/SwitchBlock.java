@@ -66,7 +66,7 @@ public class SwitchBlock extends Collidable {
     }
 
     public static void loadResource (Context context) {
-        baseImageSolid = context.getResources().getDrawable(R.drawable.test);
+        baseImageSolid = context.getResources().getDrawable(R.drawable.solidblock);
         baseImageDoom = context.getResources().getDrawable(R.drawable.bouncing);
     }
 
