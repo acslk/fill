@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="background">#d0000000</color>
+    <color name="background">#ffe6e6e6</color>
     <color name="fill">#ff9a7967</color>
     <color name="ball">#ffffffff</color>
     <color name="solidWall">#ffc98bfd</color>

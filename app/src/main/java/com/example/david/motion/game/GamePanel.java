@@ -23,6 +23,9 @@ import com.example.david.motion.collidable.SwitchBlock;
 import com.example.david.motion.field.DirectionField;
 import com.example.david.motion.field.Field;
 import com.example.david.motion.field.NoGravityField;
+import com.example.david.motion.region.ColorBlock;
+import com.example.david.motion.region.GameColor;
+import com.example.david.motion.region.Region;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -90,9 +93,27 @@ public class GamePanel  implements SensorEventListener, View.OnTouchListener {
     }
 
     public void loadMap () throws IOException {
+        List<ColorBlock> blocks = new ArrayList<>();
+        List<Region> regions = new ArrayList<>();
         List<Collidable> collidables = new ArrayList<>();
         List<Field> fields = new ArrayList<>();
         List<Collectable> collectables = new ArrayList<>();
+
+        float mapWidth = 800, mapHeight = 800;
+        GameColor defaultColor = new GameColor(2, 2, 2);
+        Region backRegion = new Region(defaultColor);
+        backRegion.childBlocks.add(new ColorBlock(0, 0, mapWidth, mapHeight, 1, 1, 1));
+
+        blocks.add(new ColorBlock(0, 0, 100, 100, 0, 0, 2));
+        blocks.add(new ColorBlock(700, 0, 100, 100, 2, 0, 0));
+        Region.setRegions(regions, blocks);
+
+        Log.i("MotionRegion", regions.size() + " ");
+        for (Region region : regions) {
+            for (ColorBlock block : region.childBlocks) {
+                Log.i("MotionRegion", block.gameColor.toString());
+            }
+        }
 
         collidables.add(new SolidBlock(50, 50, 100, 100));
         collidables.add(new SlideBlock(50, 400, 400, 100, 1));
@@ -105,7 +126,7 @@ public class GamePanel  implements SensorEventListener, View.OnTouchListener {
         collectables.add(new ColorObj(20, 200, 0, 50, 0));
 
         gameMap = new GameMap(parentActivity.getResources().getDimension(R.dimen.ballDiameter), 800, 800);
-        gameMap.loadStuff(collidables, fields, collectables);
+        gameMap.loadStuff(backRegion, regions, collidables, fields, collectables);
     }
 
     public void updateMap () {
@@ -149,10 +170,6 @@ public class GamePanel  implements SensorEventListener, View.OnTouchListener {
         Log.i("Motion", event.toString() + " " + v.getId());
         switch (v.getId()) {
             case R.id.gameSurfaceView :
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                }
-                break;
-            case R.id.statusBar:
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     pauseGame();
                     parentActivity.showPauseDialog();

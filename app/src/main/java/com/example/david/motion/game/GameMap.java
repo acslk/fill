@@ -6,12 +6,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-import com.example.david.motion.GameColor;
+import com.example.david.motion.region.GameColor;
 import com.example.david.motion.R;
-import com.example.david.motion.Utils;
 import com.example.david.motion.collectable.Collectable;
 import com.example.david.motion.collidable.Collidable;
 import com.example.david.motion.field.Field;
+import com.example.david.motion.region.Region;
 
 import java.util.Iterator;
 import java.util.List;
@@ -26,14 +26,15 @@ public class GameMap {
     private static int foundationColor;
     private static int fillColor;
 
-    private GameColor gameColor;
-    private int targetR, targetG, targetB;
     private Paint foundationPaint, backgroundPaint;
     private float startX, startY;
     private float screenWidth, screenHeight;
     private boolean fullWidth = true, fullHeight = true;
 
     public final float width, height; // in map unit
+    public Region backRegion;
+    public List<Region> regions;
+
     public List<Collidable> collidables;
     public List<Field> fields;
     public List<Collectable> collectables;
@@ -57,14 +58,10 @@ public class GameMap {
         backgroundPaint.setColor(backgroundColor);
     }
 
-    public void loadColor (GameColor currentColor, int targetR, int targetG, int targetB) {
-        this.gameColor = currentColor;
-        this.targetR = GameColor.bound(targetR);
-        this.targetG = GameColor.bound(targetG);
-        this.targetB = GameColor.bound(targetB);
-    }
-
-    public void loadStuff (List<Collidable> collidables, List<Field> fields, List<Collectable> collectables) {
+    public void loadStuff (Region backRegion, List<Region> regions, List<Collidable> collidables,
+                           List<Field> fields, List<Collectable> collectables) {
+        this.backRegion = backRegion;
+        this.regions = regions;
         this.collidables = collidables;
         this.fields = fields;
         this.collectables = collectables;
@@ -122,45 +119,43 @@ public class GameMap {
     public synchronized void setDisplayPosition () {
 
         if (fullWidth) {
-            if (ball.x > screenWidth / 2 && ball.x < width - screenWidth / 2) {
+            if (ball.x > screenWidth / 2 && ball.x < width - screenWidth / 2)
                 startX = screenWidth / 2 - ball.x;
-            } else if (ball.x <= screenWidth / 2) {
+            else if (ball.x <= screenWidth / 2)
                 startX = 0;
-            } else {
+            else
                 startX = screenWidth - width;
-            }
         }
 
         if (fullHeight) {
-            if (ball.y > screenHeight / 2 && ball.y < height - screenHeight / 2) {
+            if (ball.y > screenHeight / 2 && ball.y < height - screenHeight / 2)
                 startY = screenHeight / 2 - ball.y;
-            } else if (ball.y <= screenHeight / 2) {
+            else if (ball.y <= screenHeight / 2)
                 startY = 0;
-            } else {
+            else
                 startY = screenHeight - height;
-            }
         }
     }
 
     public synchronized void updateDisplay (Canvas canvas) {
-        canvas.drawColor(foundationColor);
+        // draw border if not fullscreen
         if (!fullWidth || !fullHeight) {
             canvas.drawColor(fillColor);
             canvas.drawRect(px(startX - 1), px(startY - 1), px(startX + width + 1), px(startY + height + 1),
                     foundationPaint);
         }
-        canvas.drawRect(px(startX), px(startY), px(startX + width), px(startY + height),
-                backgroundPaint);
+
+        // draw contents
+        backRegion.onDraw(canvas, startX, startY);
+        for (Region region : regions)
+            region.onDraw(canvas, startX, startY);
         ball.onDraw(canvas, startX, startY);
-        for (Field field : fields) {
+        for (Field field : fields)
             field.onDraw(canvas, startX, startY);
-        }
-        for (Collectable collectable : collectables) {
+        for (Collectable collectable : collectables)
             collectable.onDraw(canvas, startX, startY);
-        }
-        for (Collidable collidable : collidables) {
+        for (Collidable collidable : collidables)
             collidable.onDraw(canvas, startX, startY);
-        }
     }
 
     public void failGame(String message) {

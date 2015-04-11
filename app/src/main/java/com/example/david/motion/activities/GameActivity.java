@@ -42,7 +42,6 @@ public class GameActivity extends FullScreenActivity implements SurfaceHolder.Ca
         surfaceView.getHolder().addCallback(this);
 
         surfaceView.setOnTouchListener(gamePanel);
-        findViewById(R.id.statusBar).setOnTouchListener(gamePanel);
 
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
     }
