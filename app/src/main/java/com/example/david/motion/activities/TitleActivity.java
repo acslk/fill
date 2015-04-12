@@ -8,7 +8,7 @@ import android.preference.PreferenceManager;
 import android.view.View;
 
 import com.example.david.motion.R;
-import com.example.david.motion.collectable.ColorObj;
+import com.example.david.motion.collectable.PaintObj;
 import com.example.david.motion.collidable.DoomBlock;
 import com.example.david.motion.collidable.FragileBlock;
 import com.example.david.motion.collidable.SlideBlock;
@@ -60,6 +60,6 @@ public class TitleActivity extends FullScreenActivity {
         LowVField.loadResource(context);
         HighVField.loadResource(context);
 
-        ColorObj.loadResource(context);
+        PaintObj.loadResource(context);
     }
 }

@@ -32,6 +32,30 @@ public class GameColor {
         return Color.rgb(paintVal[r], paintVal[g], paintVal[b]);
     }
 
+    public int getLightColor () {
+        return Color.rgb(lightVal[r], lightVal[g], lightVal[b]);
+    }
+
+    /**
+     * Apply subtractive coloring
+     * @param paintColor
+     */
+    public void addPaint (GameColor paintColor) {
+        r = bound(r + paintColor.r - 2);
+        g = bound(g + paintColor.g - 2);
+        b = bound(b + paintColor.b - 2);
+    }
+
+    /**
+     * Apply addictive coloring
+     * @param lightColor
+     */
+    public void addLight (GameColor lightColor) {
+        r = bound(r + lightColor.r);
+        g = bound(g + lightColor.g);
+        b = bound(b + lightColor.b);
+    }
+
     public boolean match(int r, int g, int b) {
         return this.r == r && this.g == g && this.b == b;
     }

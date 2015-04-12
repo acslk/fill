@@ -28,4 +28,12 @@ public class Utils {
             return min;
         return val;
     }
+
+    public static double setBetween (double val, double max, double min) {
+        if (val > max)
+            return max;
+        else if (val < min)
+            return min;
+        return val;
+    }
 }

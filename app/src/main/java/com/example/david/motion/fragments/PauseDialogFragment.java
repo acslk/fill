@@ -46,7 +46,7 @@ public class PauseDialogFragment extends DialogFragment implements View.OnClickL
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
         if (!quit && getActivity() != null) {
-            ((GameActivity) getActivity()).gamePanel.resumeGame();
+            ((GameActivity) getActivity()).resumeGame();
         }
     }
 
@@ -55,7 +55,7 @@ public class PauseDialogFragment extends DialogFragment implements View.OnClickL
         int button_id = v.getId();
         if (button_id == R.id.quit_button) {
             quit = true;
-            ((GameActivity) getActivity()).gamePanel.endGame(true);
+            ((GameActivity) getActivity()).endGame(true);
         } else if (button_id == R.id.resume_button) {
             Log.i("Motion", "dismiss dialog");
             dismiss();

@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.hardware.SensorEvent;
+import android.util.Log;
 
 import com.example.david.motion.region.GameColor;
 import com.example.david.motion.R;
@@ -22,16 +24,20 @@ import java.util.List;
 public class GameMap {
 
     private static float scale; // conversion factor from map unit to pixel
-    private static int backgroundColor;
     private static int foundationColor;
     private static int fillColor;
 
-    private Paint foundationPaint, backgroundPaint;
+    private Paint foundationPaint;
     private float startX, startY;
+
+    /**
+     * size of screen used to display the map, in game unit
+     */
     private float screenWidth, screenHeight;
     private boolean fullWidth = true, fullHeight = true;
 
     public final float width, height; // in map unit
+    public Region currentRegion;
     public Region backRegion;
     public List<Region> regions;
 
@@ -54,8 +60,6 @@ public class GameMap {
         startX = startY = 0;
         foundationPaint = new Paint();
         foundationPaint.setColor(foundationColor);
-        backgroundPaint = new Paint();
-        backgroundPaint.setColor(backgroundColor);
     }
 
     public void loadStuff (Region backRegion, List<Region> regions, List<Collidable> collidables,
@@ -65,6 +69,8 @@ public class GameMap {
         this.collidables = collidables;
         this.fields = fields;
         this.collectables = collectables;
+
+        currentRegion = backRegion;
     }
 
     public void loadScreen(float screenWidth, float screenHeight) {
@@ -80,7 +86,15 @@ public class GameMap {
         }
     }
 
+    // this might seem redundant, but it's currently used for synchronization
+    public synchronized void updateBallAcceleration (SensorEvent sensorEvent) {
+        ball.updateAcceleration(sensorEvent);
+    }
+
     public synchronized void updateStatus () {
+
+        long time = System.nanoTime();
+
         for (Iterator<Field> iterator = fields.iterator(); iterator.hasNext();) {
             Field f = iterator.next();
             if (f.containsBall(ball))
@@ -102,18 +116,26 @@ public class GameMap {
                 iterator.remove();
         }
 
+        for (Region region : regions) {
+            if (region.containsBall(ball))
+                region.collide(ball, lastBall);
+        }
+
         ball.interactBound(width, height);
         lastBall.getCopy(ball);
 
         for (Iterator<Collectable> iterator = collectables.iterator(); iterator.hasNext();) {
             Collectable c = iterator.next();
             if (c.containsBall(ball))
-                c.collect(ball, this);
+                c.collect(this);
             if (!c.exist)
                 iterator.remove();
         }
 
         setDisplayPosition();
+
+        long diff = System.nanoTime() - time;
+        Log.i("MotionStatus", " " + diff);
     }
 
     public synchronized void setDisplayPosition () {
@@ -138,6 +160,9 @@ public class GameMap {
     }
 
     public synchronized void updateDisplay (Canvas canvas) {
+
+        long time = System.nanoTime();
+
         // draw border if not fullscreen
         if (!fullWidth || !fullHeight) {
             canvas.drawColor(fillColor);
@@ -156,6 +181,9 @@ public class GameMap {
             collectable.onDraw(canvas, startX, startY);
         for (Collidable collidable : collidables)
             collidable.onDraw(canvas, startX, startY);
+
+        long diff = System.nanoTime() - time;
+        Log.i("MotionDisplay", " " + diff);
     }
 
     public void failGame(String message) {
@@ -178,13 +206,8 @@ public class GameMap {
 
     public static void loadResource (Context context) {
         scale = context.getResources().getDimension(R.dimen.gameUnit);
-        backgroundColor = context.getResources().getColor(R.color.background);
         foundationColor = Color.WHITE;
         fillColor = context.getResources().getColor(R.color.fill);
-    }
-
-    public Paint getBackgroundPaint () {
-        return backgroundPaint;
     }
 
     public static int px (float unit) {

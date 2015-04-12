@@ -16,5 +16,5 @@ public abstract class Collectable extends GameObj {
         super(x,y,width,height);
     }
 
-    public abstract void collect (Ball ball, GameMap map);
+    public abstract void collect (GameMap map);
 }

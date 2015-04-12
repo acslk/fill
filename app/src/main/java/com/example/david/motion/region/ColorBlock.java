@@ -30,8 +30,13 @@ public class ColorBlock extends GameObj {
         paint.setColor(gameColor.getBackgroundColor());
     }
 
+    // TODO implement this
     public boolean isNeighbor (ColorBlock colorBlock) {
         return false;
+    }
+
+    public void resetColor (GameColor gameColor) {
+        paint.setColor(gameColor.getBackgroundColor());
     }
 
     @Override

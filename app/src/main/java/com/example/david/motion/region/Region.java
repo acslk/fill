@@ -2,6 +2,8 @@ package com.example.david.motion.region;
 
 import android.graphics.Canvas;
 
+import com.example.david.motion.game.Ball;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,19 +15,27 @@ public class Region {
     public GameColor gameColor;
     public List<ColorBlock> childBlocks = new ArrayList<>();
     public List<Region> neighborRegions = new ArrayList<>();
+    public ColorBlock collideBlock;
 
     public Region (GameColor gameColor) {
         this.gameColor = gameColor;
     }
 
-    public void onDraw(Canvas canvas, float mapX, float mapY) {
-        for (ColorBlock colorBlock : childBlocks) {
-            colorBlock.onDraw(canvas, mapX, mapY);
+    public boolean containsBall (Ball ball) {
+        for (ColorBlock block : childBlocks) {
+            if (block.containsBall(ball)) {
+                collideBlock = block;
+                return true;
+            }
         }
+        return false;
     }
 
-    public static void setRegions (List<Region> regionList,
-                                   List<ColorBlock> blockList) {
+    public void collide (Ball ball, Ball lastBall) {
+        collideBlock.bounceOff(ball, lastBall);
+    }
+
+    public static void setRegions (List<Region> regionList, List<ColorBlock> blockList) {
 
         for (int i = 0; i < blockList.size(); i++) {
             for (int j = i + 1; j < blockList.size(); j++) {
@@ -55,8 +65,6 @@ public class Region {
                 }
             }
         }
-
-
     }
 
     public void traverse (ColorBlock block) {
@@ -69,6 +77,38 @@ public class Region {
         }
     }
 
+
+    public void onColorChange (List<Region> regionList) {
+
+        for (ColorBlock block : childBlocks)
+            block.resetColor(gameColor);
+
+        for (int i = 0; i < neighborRegions.size(); i++) {
+            Region merged = neighborRegions.get(i);
+            if (gameColor.equals(merged.gameColor)) {
+                // remove from list
+                neighborRegions.remove(merged);
+                i--;
+                regionList.remove(merged);
+
+                // redirect all neighbor connection to the matching region
+                // update neighbor regions of current region
+                for (Region neighbor : merged.neighborRegions) {
+                    if (neighbor != this) {
+                        neighbor.neighborRegions.remove(merged);
+                        if (!neighborRegions.contains(neighbor)) {
+                            neighborRegions.add(neighbor);
+                            neighbor.neighborRegions.add(this);
+                        }
+                    }
+                }
+
+                // merge all blocks
+                childBlocks.addAll(merged.childBlocks);
+            }
+        }
+    }
+
     public boolean isNeighbor (Region region) {
         for (ColorBlock block : childBlocks) {
             for (ColorBlock neighbor : block.neighborBlocks) {
@@ -77,6 +117,11 @@ public class Region {
             }
         }
         return false;
+    }
+
+    public void onDraw(Canvas canvas, float mapX, float mapY) {
+        for (ColorBlock block : childBlocks)
+            block.onDraw(canvas, mapX, mapY);
     }
 
 }

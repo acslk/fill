@@ -9,14 +9,16 @@ import android.util.Log;
 import com.example.david.motion.R;
 import com.example.david.motion.Utils;
 
+import java.util.Map;
+
 /**
  * Created by David on 2015-03-04.`
  */
 public class Ball extends GameObj {
 
     // Constants
-    public static final float Default_ACCELERATION_DIV_FACTOR = 7;
-    public static final float Default_ACCELERATION_Y_OFFSET = 0.5f;
+    public static final float Default_ACCELERATION_DIV_FACTOR = 100;
+    public static final float Default_ACCELERATION_Y_OFFSET = 1f;
     public static final float Default_MAXA = 0.5f;
     public static final float Default_MINA = 0.05f;
     public static final float Default_MAXV = 7;
@@ -37,6 +39,11 @@ public class Ball extends GameObj {
 
     // Ability and Effects variables
     public int ballType = 0;
+
+    public static final int TYPE_NORMAL = 0;
+    public static final int TYPE_BOOST = 1;
+    public static final int TYPE_SHIELD = 2;
+    public static final int TYPE_SPIKE = 3;
     public boolean immune = false;
     public boolean boost = false;
     public boolean spike = false;
@@ -55,20 +62,37 @@ public class Ball extends GameObj {
     }
     
     public void updateAcceleration (SensorEvent event) {
-        ax = event.values[1]/Ball.Default_ACCELERATION_DIV_FACTOR;
-        ay = event.values[0]/Ball.Default_ACCELERATION_DIV_FACTOR - Ball.Default_ACCELERATION_Y_OFFSET;
-        
-        ax = Utils.setBetween(ax, maxA, -maxA);
-        if (ax > friction && ax < minA)
-            ax = minA;
-        else if (ax < -friction && ax > -minA)
-            ax = -minA;
 
-        ay = Utils.setBetween(ay, maxA, -maxA);
-        if (ay > friction && ay < minA)
-            ay = minA;
-        else if (ay < -friction && ay > -minA)
-            ay = -minA;
+        ax = event.values[1];
+        ay = event.values[0];
+
+        long time = System.nanoTime();
+        double anglex = Math.asin(Utils.setBetween(ax / 9.81, 1, -1));
+        double angley = Math.asin(Utils.setBetween(ay / 9.81, 1, -1));
+
+        anglex = Utils.setBetween(anglex * 3, Math.PI/2, -Math.PI/2);
+        angley = Utils.setBetween(angley * 3, Math.PI/2, -Math.PI/2);
+
+        long diff = System.nanoTime() - time;
+        Log.i("MotionAcc", anglex + " " + ax + " " + angley + " " + ay + " " + diff);
+
+        ax = (float)(Math.sin(anglex) * 9.81 / Default_ACCELERATION_DIV_FACTOR);
+        ay = (float)(Math.sin(angley) * 9.81 / Default_ACCELERATION_DIV_FACTOR);
+
+//        ax = event.values[1]/Ball.Default_ACCELERATION_DIV_FACTOR;
+//        ay = event.values[0]/Ball.Default_ACCELERATION_DIV_FACTOR - Ball.Default_ACCELERATION_Y_OFFSET;
+        
+//        ax = Utils.setBetween(ax, maxA, -maxA);
+//        if (ax > friction && ax < minA)
+//            ax = minA;
+//        else if (ax < -friction && ax > -minA)
+//            ax = -minA;
+
+//        ay = Utils.setBetween(ay, maxA, -maxA);
+//        if (ay > friction && ay < minA)
+//            ay = minA;
+//        else if (ay < -friction && ay > -minA)
+//            ay = -minA;
     }
 
     public void updateVelocity() {
