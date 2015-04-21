@@ -8,11 +8,10 @@ import android.graphics.Paint;
 import android.hardware.SensorEvent;
 import android.util.Log;
 
-import com.example.david.motion.region.GameColor;
 import com.example.david.motion.R;
-import com.example.david.motion.collectable.Collectable;
-import com.example.david.motion.collidable.Collidable;
-import com.example.david.motion.field.Field;
+import com.example.david.motion.collectables.Collectable;
+import com.example.david.motion.collidables.Collidable;
+import com.example.david.motion.fields.Field;
 import com.example.david.motion.region.Region;
 
 import java.util.Iterator;
@@ -36,6 +35,7 @@ public class GameMap {
     private float screenWidth, screenHeight;
     private boolean fullWidth = true, fullHeight = true;
 
+    // map objects
     public final float width, height; // in map unit
     public Region currentRegion;
     public Region backRegion;
@@ -46,13 +46,17 @@ public class GameMap {
     public List<Collectable> collectables;
     public Ball ball, lastBall;
 
+    //  user status
+    boolean userTouching = false;
+
+    // finish game information
     boolean gameFinished = false;
     boolean levelPassed = false;
     String failMessage = "uninitialized";
 
-    public GameMap (float ballSize, float width, float height) {
+    public GameMap (float width, float height, float ballStartX, float ballStartY) {
 
-        ball = new Ball(100, 100, ballSize);
+        ball = new Ball(ballStartX, ballStartY);
         lastBall = new Ball(ball);
         this.width = width;
         this.height = height;
@@ -159,7 +163,7 @@ public class GameMap {
         }
     }
 
-    public synchronized void updateDisplay (Canvas canvas) {
+    public synchronized void updateDisplay (Canvas canvas, float interpolation) {
 
         long time = System.nanoTime();
 
@@ -171,19 +175,27 @@ public class GameMap {
         }
 
         // draw contents
-        backRegion.onDraw(canvas, startX, startY);
+        backRegion.onDraw(canvas, startX, startY, interpolation);
         for (Region region : regions)
-            region.onDraw(canvas, startX, startY);
-        ball.onDraw(canvas, startX, startY);
+            region.onDraw(canvas, startX, startY, interpolation);
+        ball.draw(canvas, startX, startY, interpolation);
         for (Field field : fields)
-            field.onDraw(canvas, startX, startY);
+            field.draw(canvas, startX, startY, interpolation);
         for (Collectable collectable : collectables)
-            collectable.onDraw(canvas, startX, startY);
+            collectable.draw(canvas, startX, startY, interpolation);
         for (Collidable collidable : collidables)
-            collidable.onDraw(canvas, startX, startY);
+            collidable.draw(canvas, startX, startY, interpolation);
 
         long diff = System.nanoTime() - time;
         Log.i("MotionDisplay", " " + diff);
+    }
+
+    public boolean isUserTouching () {
+        return userTouching;
+    }
+
+    public synchronized void setUserTouching (boolean userTouching) {
+        this.userTouching = userTouching;
     }
 
     public void failGame(String message) {

@@ -119,9 +119,9 @@ public class Region {
         return false;
     }
 
-    public void onDraw(Canvas canvas, float mapX, float mapY) {
+    public void onDraw(Canvas canvas, float mapX, float mapY, float interpolation) {
         for (ColorBlock block : childBlocks)
-            block.onDraw(canvas, mapX, mapY);
+            block.draw(canvas, mapX, mapY, interpolation);
     }
 
 }

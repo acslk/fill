@@ -1,9 +1,5 @@
-package com.example.david.motion.collectable;
+package com.example.david.motion.collectables;
 
-import android.graphics.Canvas;
-
-import com.example.david.motion.collidable.Collidable;
-import com.example.david.motion.game.Ball;
 import com.example.david.motion.game.GameMap;
 import com.example.david.motion.game.GameObj;
 

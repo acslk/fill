@@ -1,10 +1,8 @@
-package com.example.david.motion.field;
+package com.example.david.motion.fields;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.NinePatchDrawable;
-import android.util.Log;
 
 import com.example.david.motion.R;
 import com.example.david.motion.game.Ball;
@@ -42,7 +40,7 @@ public class DirectionField extends Field {
     }
 
     @Override
-    public void onDraw(Canvas canvas, float mapX, float mapY) {
+    public void draw(Canvas canvas, float mapX, float mapY, float interpoation) {
         baseImage.setBounds(GameMap.px(x + mapX), GameMap.px(y + mapY),
                 GameMap.px(x + width + mapX), GameMap.px(y + height + mapY));
         baseImage.draw(canvas);

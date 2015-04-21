@@ -8,16 +8,16 @@ import android.preference.PreferenceManager;
 import android.view.View;
 
 import com.example.david.motion.R;
-import com.example.david.motion.collectable.PaintObj;
-import com.example.david.motion.collidable.DoomBlock;
-import com.example.david.motion.collidable.FragileBlock;
-import com.example.david.motion.collidable.SlideBlock;
-import com.example.david.motion.collidable.SolidBlock;
-import com.example.david.motion.collidable.SwitchBlock;
-import com.example.david.motion.field.DirectionField;
-import com.example.david.motion.field.HighVField;
-import com.example.david.motion.field.LowVField;
-import com.example.david.motion.field.NoGravityField;
+import com.example.david.motion.collectables.PaintObj;
+import com.example.david.motion.collidables.DoomBlock;
+import com.example.david.motion.collidables.FragileBlock;
+import com.example.david.motion.collidables.SlideBlock;
+import com.example.david.motion.collidables.SolidBlock;
+import com.example.david.motion.collidables.SwitchBlock;
+import com.example.david.motion.fields.DirectionField;
+import com.example.david.motion.fields.HighVField;
+import com.example.david.motion.fields.LowVField;
+import com.example.david.motion.fields.NoGravityField;
 import com.example.david.motion.game.Ball;
 import com.example.david.motion.game.GameMap;
 

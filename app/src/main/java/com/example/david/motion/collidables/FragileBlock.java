@@ -1,4 +1,4 @@
-package com.example.david.motion.collidable;
+package com.example.david.motion.collidables;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -59,7 +59,7 @@ public class FragileBlock extends Collidable {
     }
 
     @Override
-    public void onDraw(Canvas canvas, float mapX, float mapY) {
+    public void draw(Canvas canvas, float mapX, float mapY, float interpoation) {
         baseImage.setAlpha(alpha);
         baseImage.setBounds(getOffsetRect(mapX, mapY));
         baseImage.draw(canvas);

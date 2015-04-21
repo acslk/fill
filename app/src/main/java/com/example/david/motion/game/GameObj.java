@@ -2,6 +2,7 @@ package com.example.david.motion.game;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.RectF;
 
 /**
  * Created by David on 2015-03-05.
@@ -74,6 +75,11 @@ public abstract class GameObj {
                 GameMap.px(x + width + mapX), GameMap.px(y + height + mapY));
     }
 
-    public abstract void onDraw (Canvas canvas, float mapX, float mapY);
+    protected RectF getOffsetRectF (float mapX, float mapY) {
+        return new RectF(GameMap.px(x + mapX), GameMap.px(y + mapY),
+                GameMap.px(x + width + mapX), GameMap.px(y + height + mapY));
+    }
+
+    public abstract void draw(Canvas canvas, float mapX, float mapY, float interpoation);
 
 }

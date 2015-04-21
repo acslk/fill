@@ -1,6 +1,4 @@
-package com.example.david.motion.field;
-
-import android.content.Context;
+package com.example.david.motion.fields;
 
 import com.example.david.motion.game.Ball;
 import com.example.david.motion.game.GameMap;

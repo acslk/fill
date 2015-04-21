@@ -1,4 +1,4 @@
-package com.example.david.motion.collectable;
+package com.example.david.motion.collectables;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -36,7 +36,7 @@ public class PaintObj extends Collectable {
     }
 
     @Override
-    public void onDraw(Canvas canvas, float mapX, float mapY) {
+    public void draw(Canvas canvas, float mapX, float mapY, float interpoation) {
         canvas.drawRect(getOffsetRect(mapX, mapY), paint);
     }
 

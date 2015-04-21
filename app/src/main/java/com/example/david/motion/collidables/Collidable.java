@@ -1,4 +1,4 @@
-package com.example.david.motion.collidable;
+package com.example.david.motion.collidables;
 
 import com.example.david.motion.game.Ball;
 import com.example.david.motion.game.GameMap;

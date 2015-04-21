@@ -1,4 +1,4 @@
-package com.example.david.motion.field;
+package com.example.david.motion.fields;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -11,11 +11,11 @@ import com.example.david.motion.game.GameMap;
 /**
  * Created by David on 2015-04-02.
  */
-public class LowVField extends Field {
+public class HighVField extends Field{
 
     private static Drawable baseImage;
 
-    public LowVField (float x, float y, float width, float height) {
+    public HighVField (float x, float y, float width, float height) {
         super(x, y, width, height);
     }
 
@@ -25,7 +25,7 @@ public class LowVField extends Field {
     }
 
     @Override
-    public void onDraw(Canvas canvas, float mapX, float mapY) {
+    public void draw(Canvas canvas, float mapX, float mapY, float interpoation) {
         baseImage.setBounds(GameMap.px(x + mapX), GameMap.px(y + mapY),
                 GameMap.px(x + width + mapX), GameMap.px(y + height + mapY));
         baseImage.draw(canvas);

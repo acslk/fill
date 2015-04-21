@@ -3,6 +3,7 @@ package com.example.david.motion.activities;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.Canvas;
+import android.graphics.PixelFormat;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -13,19 +14,22 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.Window;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.david.motion.R;
-import com.example.david.motion.collectable.Collectable;
-import com.example.david.motion.collectable.PaintObj;
-import com.example.david.motion.collidable.Collidable;
-import com.example.david.motion.collidable.DoomBlock;
-import com.example.david.motion.collidable.FragileBlock;
-import com.example.david.motion.collidable.SlideBlock;
-import com.example.david.motion.collidable.SolidBlock;
-import com.example.david.motion.collidable.SwitchBlock;
-import com.example.david.motion.field.DirectionField;
-import com.example.david.motion.field.Field;
-import com.example.david.motion.field.NoGravityField;
+import com.example.david.motion.collectables.Collectable;
+import com.example.david.motion.collectables.PaintObj;
+import com.example.david.motion.collidables.Collidable;
+import com.example.david.motion.collidables.DoomBlock;
+import com.example.david.motion.collidables.FragileBlock;
+import com.example.david.motion.collidables.SlideBlock;
+import com.example.david.motion.collidables.SolidBlock;
+import com.example.david.motion.collidables.SwitchBlock;
+import com.example.david.motion.fields.DirectionField;
+import com.example.david.motion.fields.Field;
+import com.example.david.motion.fields.NoGravityField;
 import com.example.david.motion.fragments.PauseDialogFragment;
 import com.example.david.motion.game.GameMap;
 import com.example.david.motion.game.GameObj;
@@ -49,47 +53,61 @@ public class GameActivity extends FullScreenActivity implements SurfaceHolder.Ca
     public static final int GRAVITY_FIELD = 11;
     public static final int COLOROBJ = 21;
 
+    public static final int UPDATE_GAME_INTERVAL = 20;
+
     public volatile boolean gameRunning;
 
-    private class DisplayRunnable implements Runnable {
-        @Override
-        public void run() {
-            Log.i("Motion", "Starting display loop");
-            while (gameRunning) {
-                Canvas canvas = surfaceView.getHolder().lockCanvas();
-                if (canvas != null) {
-                    gameMap.updateDisplay(canvas);
-                    surfaceView.getHolder().unlockCanvasAndPost(canvas);
-                }
-            }
-            Log.i("Motion", "Display loop finished executing");
-        }
-    }
+    ExecutorService pool = Executors.newFixedThreadPool(1);
+    GameMap gameMap;
+    SensorManager sensorManager;
+//    GestureDetector gestureDetector;
+
+    SurfaceView surfaceView;
+    TextView itemView;
+    TextView timeView;
+    ImageView pauseView;
+    public long totalTime = 0, tempTime = 0;
+    public long lastTime;
+    float interpolation;
 
     private class GameRunnable implements Runnable {
         @Override
         public void run() {
             Log.i("Motion", "Starting game loop");
             while (gameRunning) {
-                gameMap.updateStatus();
-                if (gameMap.isGameFinished()) {
-                    endGame(false);
+
+                long currTime = System.currentTimeMillis();
+                totalTime += (currTime - lastTime);
+                tempTime += (currTime - lastTime);
+                lastTime = currTime;
+
+                while (tempTime > UPDATE_GAME_INTERVAL) {
+                    tempTime -= UPDATE_GAME_INTERVAL;
+                    gameMap.updateStatus();
+                    if (gameMap.isGameFinished()) {
+                        endGame(false);
+                    }
+                    runOnUiThread(updateView);
                 }
-                try {
-                    Thread.sleep(16);
-                } catch (InterruptedException e) {
-                    break;
+
+                interpolation = tempTime / UPDATE_GAME_INTERVAL;
+
+                Canvas canvas = surfaceView.getHolder().lockCanvas();
+                if (canvas != null) {
+                    gameMap.updateDisplay(canvas, interpolation);
+                    surfaceView.getHolder().unlockCanvasAndPost(canvas);
                 }
             }
             Log.i("Motion", "Game loop finished executing");
         }
     }
 
-    ExecutorService pool = Executors.newFixedThreadPool(2);
-    GameMap gameMap;
-
-    SurfaceView surfaceView;
-    SensorManager sensorManager;
+    private Runnable updateView = new Runnable() {
+        @Override
+        public void run() {
+            timeView.setText(totalTime + "");
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,9 +123,16 @@ public class GameActivity extends FullScreenActivity implements SurfaceHolder.Ca
         }
         Log.i("Motion", "map loaded");
 
+//        gestureDetector = new GestureDetector(this, gestureListener);
+
         surfaceView = (SurfaceView)findViewById(R.id.gameSurfaceView);
         surfaceView.getHolder().addCallback(this);
         surfaceView.setOnTouchListener(this);
+
+        itemView = (TextView)findViewById(R.id.itemView);
+        timeView = (TextView)findViewById(R.id.gameTime);
+        pauseView = (ImageView)findViewById(R.id.pauseGame);
+        pauseView.setOnTouchListener(this);
 
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
     }
@@ -118,18 +143,18 @@ public class GameActivity extends FullScreenActivity implements SurfaceHolder.Ca
         showPauseDialog();
     }
 
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        Log.i("Window", "onattachedwindow");
+        Window window = getWindow();
+        window.setFormat(PixelFormat.RGBA_8888);
+    }
+
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         gameMap.loadScreen(surfaceView.getWidth(), surfaceView.getHeight());
-        if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) == null) {
-            Log.i("sensor", "null");
-        } else {
-            sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-                    SensorManager.SENSOR_DELAY_GAME);
-            Log.i("sensor", "exists");
-        }
-
+        holder.setFormat(PixelFormat.RGBA_8888);
         resumeGame();
         Log.i("Motion", "gamepanel resumeGame finished");
     }
@@ -141,7 +166,6 @@ public class GameActivity extends FullScreenActivity implements SurfaceHolder.Ca
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        sensorManager.unregisterListener(this);
         pauseGame();
     }
 
@@ -186,19 +210,27 @@ public class GameActivity extends FullScreenActivity implements SurfaceHolder.Ca
         collectables.add(new PaintObj(20, 200, 0, 1, 0));
         collectables.add(new PaintObj(680, 0, 1, 0, 0));
 
-        gameMap = new GameMap(getResources().getDimension(R.dimen.ballDiameter), 800, 800);
+        gameMap = new GameMap(800, 800, 0, 0);
         gameMap.loadStuff(backRegion, regions, collidables, fields, collectables);
     }
 
     public void resumeGame() {
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) == null) {
+            Log.i("sensor", "null");
+        } else {
+            sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                    SensorManager.SENSOR_DELAY_GAME);
+            Log.i("sensor", "exists");
+        }
         if (!gameRunning) {
             gameRunning = true;
-            pool.execute(new DisplayRunnable());
+            lastTime = System.currentTimeMillis();
             pool.execute(new GameRunnable());
         }
     }
 
     public void pauseGame () {
+        sensorManager.unregisterListener(this);
         if (gameRunning) {
             gameRunning = false;
         }
@@ -218,15 +250,22 @@ public class GameActivity extends FullScreenActivity implements SurfaceHolder.Ca
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         Log.i("Motion", event.toString() + " " + v.getId());
-//        switch (v.getId()) {
-//            case R.id.gameSurfaceView :
-                if (event.getAction() == MotionEvent.ACTION_UP) {
+        switch (v.getId()) {
+            case R.id.pauseGame :
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     pauseGame();
                     showPauseDialog();
                     Log.i("Motion", "show dialog");
                 }
-//                break;
-//        }
+                break;
+            case R.id.gameSurfaceView :
+                if (event.getAction() == MotionEvent.ACTION_DOWN && !gameMap.isUserTouching()) {
+                    gameMap.setUserTouching(true);
+                } else if (event.getAction() == MotionEvent.ACTION_UP && gameMap.isUserTouching()) {
+                    gameMap.setUserTouching(false);
+                }
+                break;
+        }
         return true;
     }
 

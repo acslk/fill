@@ -8,8 +8,7 @@ import android.util.Log;
 
 import com.example.david.motion.R;
 import com.example.david.motion.Utils;
-
-import java.util.Map;
+import com.example.david.motion.effects.ParticleGroup;
 
 /**
  * Created by David on 2015-03-04.`
@@ -26,6 +25,7 @@ public class Ball extends GameObj {
     public static final float Default_FRICTION = 0.02f;
 
     private static Drawable ballImage;
+    private static float ballSize;
 
     // Movement varaibles
     public float ax = 0, ay = 0;
@@ -36,6 +36,9 @@ public class Ball extends GameObj {
     public boolean frictionEnabled;
     public float friction = Default_FRICTION;
     public float bounce = Default_BOUNCE;
+
+    // Particle effect
+    ParticleGroup particleGroup;
 
     // Ability and Effects variables
     public int ballType = 0;
@@ -50,9 +53,10 @@ public class Ball extends GameObj {
     
     public float size = 0; // in game unit
 
-    public Ball (float x, float y, float size) {
-        super(x, y, GameMap.unit(size), GameMap.unit(size));
-        this.size = GameMap.unit(size);
+    public Ball (float x, float y) {
+        super(x, y, GameMap.unit(ballSize), GameMap.unit(ballSize));
+        this.size = GameMap.unit(ballSize);
+        particleGroup = new ParticleGroup(10, size/2, size/2);
         Log.i("Ball", x + " " + y + " " + size);
     }
 
@@ -122,6 +126,7 @@ public class Ball extends GameObj {
     }
 
     public void updateDisplacement() {
+        particleGroup.update(x, y);
         x += vx;
         y += vy;
     }
@@ -149,14 +154,15 @@ public class Ball extends GameObj {
         y = ball.y;
     }
 
-    public void onDraw(Canvas canvas, float mapX, float mapY) {
-        ballImage.setBounds(GameMap.px(x + mapX), GameMap.px(y + mapY),
-                GameMap.px(x + size + mapX), GameMap.px(y + size + mapY));
+    public void draw(Canvas canvas, float mapX, float mapY, float interpoation) {
+        particleGroup.draw(canvas, mapX, mapY, interpoation);
+        ballImage.setBounds(getOffsetRect(mapX, mapY));
         ballImage.draw(canvas);
     }
 
     public static void loadResrouce (Context context) {
         ballImage = context.getResources().getDrawable(R.drawable.ball);
+        ballSize = context.getResources().getDimension(R.dimen.ballDiameter);
     }
 
 }
