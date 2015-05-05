@@ -36,7 +36,7 @@ public class SwitchBlock extends Collidable {
     @Override
     public void update(GameMap gameMap) {
         if (collided)
-            gameMap.failGame("The ball caught on fire");
+            gameMap.failGame("The ball touched the red block");
         if (switching) {
             if (!doomMode)
                 solidAlpha -= 5;

@@ -176,6 +176,7 @@ public class GameActivity extends FullScreenActivity implements SurfaceHolder.Ca
     }
 
     public void loadMap () throws IOException {
+
         List<ColorBlock> blocks = new ArrayList<>();
         List<Region> regions = new ArrayList<>();
         List<Collidable> collidables = new ArrayList<>();
@@ -185,32 +186,48 @@ public class GameActivity extends FullScreenActivity implements SurfaceHolder.Ca
         float mapWidth = 800, mapHeight = 800;
         GameColor defaultColor = new GameColor(2, 2, 2);
         Region backRegion = new Region(defaultColor);
-        backRegion.childBlocks.add(new ColorBlock(0, 0, mapWidth, mapHeight, 2, 2, 2));
+        backRegion.childBlocks.add(new ColorBlock(0, 0, mapWidth, mapHeight, defaultColor));
+        gameMap = new GameMap(mapWidth, mapHeight, 400, 790);
 
-        blocks.add(new ColorBlock(0, 0, 100, 100, 0, 0, 1));
-        blocks.add(new ColorBlock(700, 0, 100, 100, 1, 0, 0));
+        blocks.add(new ColorBlock(350, 450, 100, 50, 1, 2, 2));
+        blocks.add(new ColorBlock(300, 300, 50, 200, 1, 1, 2));
+        blocks.add(new ColorBlock(300, 100, 200, 250, 1, 1, 2));
+        blocks.add(new ColorBlock(450, 300, 50, 200, 1, 1, 2));
+        blocks.add(new ColorBlock(0, 0, 800, 100, 1, 1, 1));
         Region.setRegions(regions, blocks);
         backRegion.neighborRegions.addAll(regions);
 
-        Log.i("MotionRegion", regions.size() + " ");
-        for (Region region : regions) {
-            for (ColorBlock block : region.childBlocks) {
-                Log.i("MotionRegion", block.gameColor.toString());
-            }
-        }
+//        Log.i("MotionRegion", regions.size() + " ");
+//        for (Region region : regions) {
+//            for (ColorBlock block : region.childBlocks) {
+//                Log.i("MotionRegion", block.gameColor.toString());
+//            }
+//        }
 
-        collidables.add(new SolidBlock(50, 50, 100, 100));
-        collidables.add(new SlideBlock(50, 400, 400, 100, 1));
-        collidables.add(new FragileBlock(50, 600, 200, 200));
-        collidables.add(new DoomBlock(400, 500, 100, 100));
-        collidables.add(new SwitchBlock(200, 50, 100, 100, 1));
-        fields.add(new DirectionField(400, 50, 150, 150, GameObj.Direction.BOTTOM));
-        fields.add(new NoGravityField(400, 250, 100, 100));
-        collectables.add(new PaintObj(100, 200, 0, 0, 1));
-        collectables.add(new PaintObj(20, 200, 0, 1, 0));
-        collectables.add(new PaintObj(680, 0, 1, 0, 0));
+//        collidables.add(new SolidBlock(50, 50, 100, 100));
+//        collidables.add(new SlideBlock(50, 400, 400, 100, 1));
+//        collidables.add(new FragileBlock(50, 600, 200, 200));
+//        collidables.add(new DoomBlock(400, 500, 100, 100));
+//        collidables.add(new SwitchBlock(200, 50, 100, 100, 1));
+//        fields.add(new DirectionField(400, 50, 150, 150, GameObj.Direction.BOTTOM));
+//        fields.add(new NoGravityField(400, 250, 100, 100));
+//        collectables.add(new PaintObj(100, 200, 2, 2, 1));
+//        collectables.add(new PaintObj(20, 200, 2, 1, 2));
+//        collectables.add(new PaintObj(680, 0, 1, 2, 2));
 
-        gameMap = new GameMap(800, 800, 0, 0);
+        collidables.add(new SwitchBlock(200, 100, 100, 100, 1));
+        collidables.add(new FragileBlock(0, 450, 300, 50));
+        collidables.add(new SolidBlock(500, 250, 100, 100));
+        collidables.add(new SlideBlock(600, 250, 100, 100, 1));
+        collidables.add(new SolidBlock(700, 250, 100, 100));
+
+        fields.add(new NoGravityField(0, 100, 300, 350));
+        fields.add(new DirectionField(500, 400, 300, 100, GameObj.Direction.BOTTOM));
+
+        collectables.add(new PaintObj(100, 140, 1, 2, 2));
+        collectables.add(new PaintObj(390, 370, 2, 1, 2));
+        collectables.add(new PaintObj(390, 140, 2, 2, 1));
+
         gameMap.loadStuff(backRegion, regions, collidables, fields, collectables);
     }
 
@@ -259,9 +276,9 @@ public class GameActivity extends FullScreenActivity implements SurfaceHolder.Ca
                 }
                 break;
             case R.id.gameSurfaceView :
-                if (event.getAction() == MotionEvent.ACTION_DOWN && !gameMap.isUserTouching()) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     gameMap.setUserTouching(true);
-                } else if (event.getAction() == MotionEvent.ACTION_UP && gameMap.isUserTouching()) {
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     gameMap.setUserTouching(false);
                 }
                 break;

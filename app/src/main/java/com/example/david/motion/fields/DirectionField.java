@@ -25,16 +25,16 @@ public class DirectionField extends Field {
     public void applyForce (Ball ball) {
         switch (direction) {
             case LEFT:
-                ball.vx -= 0.5;
+                ball.vx -= 0.2;
                 break;
             case RIGHT:
-                ball.vx += 0.5;
+                ball.vx += 0.2;
                 break;
             case TOP:
-                ball.vy -= 0.5;
+                ball.vy -= 0.2;
                 break;
             case BOTTOM:
-                ball.vy += 0.5;
+                ball.vy += 0.2;
                 break;
         }
     }

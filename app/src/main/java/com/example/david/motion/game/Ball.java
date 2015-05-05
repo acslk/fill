@@ -29,6 +29,7 @@ public class Ball extends GameObj {
 
     // Movement varaibles
     public float ax = 0, ay = 0;
+    public float dirx = 0, diry = 0;
     public float maxA = Default_MAXA, minA = Default_MINA;
     public float vx = 0, vy = 0;
     public float maxV = Default_MAXV;
@@ -56,7 +57,7 @@ public class Ball extends GameObj {
     public Ball (float x, float y) {
         super(x, y, GameMap.unit(ballSize), GameMap.unit(ballSize));
         this.size = GameMap.unit(ballSize);
-        particleGroup = new ParticleGroup(10, size/2, size/2);
+        particleGroup = new ParticleGroup(5, 10, size/2, size/2);
         Log.i("Ball", x + " " + y + " " + size);
     }
 
@@ -83,6 +84,10 @@ public class Ball extends GameObj {
         ax = (float)(Math.sin(anglex) * 9.81 / Default_ACCELERATION_DIV_FACTOR);
         ay = (float)(Math.sin(angley) * 9.81 / Default_ACCELERATION_DIV_FACTOR);
 
+        double len = Math.sqrt(ax * ax + ay * ay);
+        dirx = ax / (float)len;
+        diry = ay / (float)len;
+
 //        ax = event.values[1]/Ball.Default_ACCELERATION_DIV_FACTOR;
 //        ay = event.values[0]/Ball.Default_ACCELERATION_DIV_FACTOR - Ball.Default_ACCELERATION_Y_OFFSET;
         
@@ -100,8 +105,16 @@ public class Ball extends GameObj {
     }
 
     public void updateVelocity() {
+
         vx += ax;
         vy += ay;
+
+        Log.i("Dir", dirx + " " + diry);
+
+        if (boost) {
+            vx += dirx / 10;
+            vy += diry / 10;
+        }
 
         if (frictionEnabled) {
             if (vx <= friction && vx >= -friction) {
@@ -120,9 +133,16 @@ public class Ball extends GameObj {
             }
         }
 
-        // max velocity adjustment
-        vx = Utils.setBetween(vx, maxV, -maxV);
-        vy = Utils.setBetween(vy, maxV, -maxV);
+//        if (vx > maxV) {
+//
+//        } else if (vx < -maxV) {
+//
+//        }
+//        if (vy > maxV) {
+//
+//        } else if (vy < -maxV) {
+//
+//        }
     }
 
     public void updateDisplacement() {
@@ -145,6 +165,15 @@ public class Ball extends GameObj {
         } else if (y > height - size) {
             y = height - size;
             vy = -vy * bounce;
+        }
+    }
+
+    public void setBoost(boolean boost) {
+        this.boost = boost;
+        if (boost) {
+            particleGroup.changeSetting(20, 1);
+        } else {
+            particleGroup.changeSetting(5, 10);
         }
     }
 

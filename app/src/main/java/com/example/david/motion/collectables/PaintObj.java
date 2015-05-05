@@ -30,8 +30,7 @@ public class PaintObj extends Collectable {
 
     @Override
     public void collect(GameMap map) {
-        map.currentRegion.gameColor.addPaint(paintColor);
-        map.currentRegion.onColorChange(map.regions);
+        map.onChangeColor(paintColor);
         exist = false;
     }
 

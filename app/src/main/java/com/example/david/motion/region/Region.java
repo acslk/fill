@@ -37,6 +37,7 @@ public class Region {
 
     public static void setRegions (List<Region> regionList, List<ColorBlock> blockList) {
 
+        // set all block neighbor relationships
         for (int i = 0; i < blockList.size(); i++) {
             for (int j = i + 1; j < blockList.size(); j++) {
                 if (blockList.get(i).isNeighbor(blockList.get(j))) {
@@ -46,11 +47,12 @@ public class Region {
             }
         }
 
-        // form the regions form the blocks
+        // form the regions from the blocks
         for (ColorBlock block : blockList) {
             if (!block.added) {
                 Region region = new Region(block.gameColor);
                 region.childBlocks.add(block);
+                block.added = true;
                 region.traverse(block);
                 regionList.add(region);
             }

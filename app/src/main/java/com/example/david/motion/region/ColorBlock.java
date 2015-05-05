@@ -24,16 +24,20 @@ public class ColorBlock extends GameObj {
     boolean back = true;
     public GameColor gameColor;
     Paint paint;
+    LinearGradient linearGradient;
 
     public List<ColorBlock> neighborBlocks = new ArrayList<>();
 
     public ColorBlock (float x, float y, float width, float height, int r, int g, int b) {
+        this(x, y, width, height, new GameColor(r, g, b));
+    }
+
+    public ColorBlock (float x, float y, float width, float height, GameColor gameColor) {
         super(x, y, width, height);
-        gameColor = new GameColor(r, g, b);
+        this.gameColor = gameColor;
         paint = new Paint();
         paint.setDither(true);
-//        paint.setColor(gameColor.getBackgroundColor());
-
+        paint.setColor(gameColor.getBackgroundColor());
     }
 
     // TODO implement this
@@ -42,16 +46,16 @@ public class ColorBlock extends GameObj {
     }
 
     public void resetColor (GameColor gameColor) {
-        paint.setColor(gameColor.getBackgroundColor());
+        this.gameColor = gameColor;
     }
 
     @Override
     public void draw(Canvas canvas, float mapX, float mapY, float interpoation) {
-        Rect r = getOffsetRect(mapX, mapY);
-        LinearGradient linearGradient = new LinearGradient(r.left, r.top, r.right + 200, r.bottom + 200,
-                Color.BLACK, Color.WHITE, Shader.TileMode.CLAMP);
-        paint.setShader(linearGradient);
-        paint.setDither(true);
+//        Rect r = getOffsetRect(mapX, mapY);
+//        linearGradient = new LinearGradient(r.left, r.top, r.right, r.bottom,
+//                gameColor.getBackgroundColor(), gameColor.getBackgroundColor2(), Shader.TileMode.CLAMP);
+//        paint.setShader(linearGradient);
+        paint.setColor(gameColor.getBackgroundColor());
         canvas.drawRect(getOffsetRect(mapX, mapY), paint);
     }
 

@@ -12,6 +12,7 @@ import com.example.david.motion.R;
 import com.example.david.motion.collectables.Collectable;
 import com.example.david.motion.collidables.Collidable;
 import com.example.david.motion.fields.Field;
+import com.example.david.motion.region.GameColor;
 import com.example.david.motion.region.Region;
 
 import java.util.Iterator;
@@ -178,9 +179,9 @@ public class GameMap {
         backRegion.onDraw(canvas, startX, startY, interpolation);
         for (Region region : regions)
             region.onDraw(canvas, startX, startY, interpolation);
-        ball.draw(canvas, startX, startY, interpolation);
         for (Field field : fields)
             field.draw(canvas, startX, startY, interpolation);
+        ball.draw(canvas, startX, startY, interpolation);
         for (Collectable collectable : collectables)
             collectable.draw(canvas, startX, startY, interpolation);
         for (Collidable collidable : collidables)
@@ -190,12 +191,30 @@ public class GameMap {
         Log.i("MotionDisplay", " " + diff);
     }
 
+    public synchronized void onChangeColor(GameColor paintColor) {
+        currentRegion.gameColor.addPaint(paintColor);
+        currentRegion.onColorChange(regions);
+        if (regions.isEmpty()) {
+            gameFinished = true;
+            levelPassed = true;
+        }
+    }
+
     public boolean isUserTouching () {
         return userTouching;
     }
 
     public synchronized void setUserTouching (boolean userTouching) {
-        this.userTouching = userTouching;
+        // from touch to not touch
+        if (this.userTouching && !userTouching) {
+            this.userTouching = userTouching;
+            ball.setBoost(false);
+        }
+        // from not touch to touch
+        else if (!this.userTouching && userTouching) {
+            this.userTouching = userTouching;
+            ball.setBoost(true);
+        }
     }
 
     public void failGame(String message) {

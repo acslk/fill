@@ -13,8 +13,10 @@ import java.util.Objects;
  */
 public class GameColor {
 
-    private final static int[] backVal = {80, 140, 220};
-    private final static int[] paintVal = {30, 80, 130};
+    private final static int[] backR = {155,190, 220};
+    private final static int[] backG = {145, 195, 230};
+    private final static int[] backB = {140, 175, 215};
+    private final static int[] paintVal = {80, 110, 140};
     private final static int[] lightVal = {200, 230, 255};
     int r, g, b;
 
@@ -25,8 +27,10 @@ public class GameColor {
     }
 
     public int getBackgroundColor () {
-        return Color.rgb(backVal[r], backVal[g], backVal[b]);
+        return Color.rgb(backR[r], backG[g], backB[b]);
     }
+
+    public int getBackgroundColor2 () { return Color.rgb(backR[r] - 40, backG[g] - 40, backB[b] - 40); }
 
     public int getPaintColor () {
         return Color.rgb(paintVal[r], paintVal[g], paintVal[b]);
