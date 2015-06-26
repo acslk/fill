@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="100"
+   height="100"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="pause.svg"
+   inkscape:export-filename="/home/dave/Documents/Motion-Drawings/pause.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.8284271"
+     inkscape:cx="-57.950576"
+     inkscape:cy="19.816485"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1855"
+     inkscape:window-height="1056"
+     inkscape:window-x="65"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-952.36218)">
+    <path
+       sodipodi:type="arc"
+       style="fill:#000000;fill-opacity:0.39215687;stroke-width:0;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path3757"
+       sodipodi:cx="55.3125"
+       sodipodi:cy="49.4375"
+       sodipodi:rx="42.8125"
+       sodipodi:ry="45.9375"
+       d="M 98.125,49.4375 C 98.125,74.808081 78.957191,95.375 55.3125,95.375 31.667809,95.375 12.5,74.808081 12.5,49.4375 12.5,24.066919 31.667809,3.5 55.3125,3.5 78.957191,3.5 98.125,24.066919 98.125,49.4375 z"
+       transform="matrix(1.1678832,0,0,1.0884354,-14.59854,948.55266)" />
+    <rect
+       style="fill:#ffffff;fill-opacity:0.78431373;stroke-width:0;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect3759"
+       width="18"
+       height="70"
+       x="25"
+       y="967.36218"
+       ry="9.0303545" />
+    <rect
+       style="fill:#ffffff;fill-opacity:0.78431373;stroke-width:0;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect3759-1"
+       width="18"
+       height="70"
+       x="53"
+       y="967.36218"
+       ry="9.0303545" />
+  </g>
+</svg>

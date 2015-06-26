@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.david.motion.activities.LevelActivity">
+    tools:context="com.motion.activities.LevelActivity">
 
     <FrameLayout
         android:id="@+id/fragment_container"
