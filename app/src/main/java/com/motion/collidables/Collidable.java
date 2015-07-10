@@ -1,7 +1,7 @@
 package com.motion.collidables;
 
 import com.motion.game.Ball;
-import com.motion.game.GameMap;
+import com.motion.game.Game;
 import com.motion.game.GameObj;
 
 public abstract class Collidable extends GameObj {
@@ -12,6 +12,6 @@ public abstract class Collidable extends GameObj {
 
     public abstract void collide (Ball ball, Ball lastBall);
 
-    public void update (GameMap gameMap) {};
+    public void update (Game game) {};
 
 }

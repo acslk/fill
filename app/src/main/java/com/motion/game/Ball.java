@@ -52,8 +52,8 @@ public class Ball extends GameObj {
     public float size = 0; // in game unit
 
     public Ball (float x, float y) {
-        super(x, y, GameMap.unit(ballSize), GameMap.unit(ballSize));
-        this.size = GameMap.unit(ballSize);
+        super(x, y, Game.unit(ballSize), Game.unit(ballSize));
+        this.size = Game.unit(ballSize);
         particleGroup = new ParticleGroup(5, 10, size/2, size/2);
         Log.i("Ball", x + " " + y + " " + size);
     }

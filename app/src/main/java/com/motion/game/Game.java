@@ -12,13 +12,11 @@ import com.motion.R;
 import com.motion.collectables.Collectable;
 import com.motion.collidables.Collidable;
 import com.motion.fields.Field;
-import com.motion.region.GameColor;
-import com.motion.region.Region;
 
 import java.util.Iterator;
 import java.util.List;
 
-public class GameMap {
+public class Game {
 
     private static float scale; // conversion factor from map unit to pixel
     private static int foundationColor;
@@ -35,13 +33,13 @@ public class GameMap {
 
     // map objects
     public final float width, height; // in map unit
-    public Region currentRegion;
-    public Region backRegion;
-    public List<Region> regions;
+    public ColorMap currentRegion;
+    public ColorMap backRegion;
+    public List<ColorMap> regions;
 
-    public List<Collidable> collidables;
-    public List<Field> fields;
-    public List<Collectable> collectables;
+    private Collidables collidables;
+    private Fields fields;
+    private Collectables collectables;
     public Ball ball, lastBall;
 
     //  user status
@@ -52,7 +50,7 @@ public class GameMap {
     boolean levelPassed = false;
     String failMessage = "uninitialized";
 
-    public GameMap (float width, float height, float ballStartX, float ballStartY) {
+    public Game(float width, float height, float ballStartX, float ballStartY) {
 
         ball = new Ball(ballStartX, ballStartY);
         lastBall = new Ball(ball);
@@ -64,8 +62,8 @@ public class GameMap {
         foundationPaint.setColor(foundationColor);
     }
 
-    public void loadStuff (Region backRegion, List<Region> regions, List<Collidable> collidables,
-                           List<Field> fields, List<Collectable> collectables) {
+    public void loadStuff (ColorMap backRegion, List<ColorMap> regions, Collidables collidables,
+                           Fields fields, Collectables collectables) {
         this.backRegion = backRegion;
         this.regions = regions;
         this.collidables = collidables;
@@ -97,42 +95,19 @@ public class GameMap {
 
         long time = System.nanoTime();
 
-        for (Iterator<Field> iterator = fields.iterator(); iterator.hasNext();) {
-            Field f = iterator.next();
-            if (f.containsBall(ball))
-                f.applyForce(ball);
-            f.update(this);
-            if (!f.exist)
-                iterator.remove();
-        }
-
+        fields.update(this, ball);
         ball.updateVelocity();
         ball.updateDisplacement();
+        collidables.update(this, ball, lastBall);
 
-        for (Iterator<Collidable> iterator = collidables.iterator(); iterator.hasNext();) {
-            Collidable c = iterator.next();
-            if (c.containsBall(ball))
-                c.collide(ball, lastBall);
-            c.update(this);
-            if (!c.exist)
-                iterator.remove();
-        }
-
-        for (Region region : regions) {
+        for (ColorMap region : regions) {
             if (region.containsBall(ball))
                 region.collide(ball, lastBall);
         }
 
         ball.interactBound(width, height);
         lastBall.getCopy(ball);
-
-        for (Iterator<Collectable> iterator = collectables.iterator(); iterator.hasNext();) {
-            Collectable c = iterator.next();
-            if (c.containsBall(ball))
-                c.collect(this);
-            if (!c.exist)
-                iterator.remove();
-        }
+        collectables.update(this, ball);
 
         setDisplayPosition();
 
@@ -174,15 +149,12 @@ public class GameMap {
 
         // draw contents
         backRegion.onDraw(canvas, startX, startY, interpolation);
-        for (Region region : regions)
+        for (ColorMap region : regions)
             region.onDraw(canvas, startX, startY, interpolation);
-        for (Field field : fields)
-            field.draw(canvas, startX, startY, interpolation);
+        fields.draw(canvas, startX, startY, interpolation);
         ball.draw(canvas, startX, startY, interpolation);
-        for (Collectable collectable : collectables)
-            collectable.draw(canvas, startX, startY, interpolation);
-        for (Collidable collidable : collidables)
-            collidable.draw(canvas, startX, startY, interpolation);
+        collectables.draw(canvas, startX, startY, interpolation);
+        collidables.draw(canvas, startX, startY, interpolation);
 
         long diff = System.nanoTime() - time;
         Log.i("MotionDisplay", " " + diff);

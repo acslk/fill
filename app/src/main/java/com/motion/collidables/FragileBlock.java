@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.motion.R;
 import com.motion.game.Ball;
-import com.motion.game.GameMap;
+import com.motion.game.Game;
 
 public class FragileBlock extends Collidable {
 
@@ -47,7 +47,7 @@ public class FragileBlock extends Collidable {
     }
 
     @Override
-    public void update(GameMap gameMap) {
+    public void update(Game game) {
         if (fading) {
             alpha -= 5;
             if (alpha < 0)

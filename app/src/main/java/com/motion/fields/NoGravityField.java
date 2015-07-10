@@ -6,7 +6,7 @@ import android.graphics.drawable.Drawable;
 
 import com.motion.R;
 import com.motion.game.Ball;
-import com.motion.game.GameMap;
+import com.motion.game.Game;
 
 public class NoGravityField extends Field {
     private static Drawable baseImage;
@@ -23,8 +23,8 @@ public class NoGravityField extends Field {
 
     @Override
     public void draw(Canvas canvas, float mapX, float mapY, float interpoation) {
-        baseImage.setBounds(GameMap.px(x + mapX), GameMap.px(y + mapY),
-                GameMap.px(x + width + mapX), GameMap.px(y + height + mapY));
+        baseImage.setBounds(Game.px(x + mapX), Game.px(y + mapY),
+                Game.px(x + width + mapX), Game.px(y + height + mapY));
         baseImage.draw(canvas);
     }
 

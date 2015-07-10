@@ -30,11 +30,14 @@ import com.motion.fields.DirectionField;
 import com.motion.fields.Field;
 import com.motion.fields.NoGravityField;
 import com.motion.fragments.PauseDialogFragment;
-import com.motion.game.GameMap;
+import com.motion.game.Collectables;
+import com.motion.game.Collidables;
+import com.motion.game.ColorMap;
+import com.motion.game.Fields;
+import com.motion.game.Game;
 import com.motion.game.GameObj;
-import com.motion.region.ColorBlock;
-import com.motion.region.GameColor;
-import com.motion.region.Region;
+import com.motion.game.ColorBlock;
+import com.motion.game.GameColor;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,7 +60,7 @@ public class GameActivity extends FullScreenActivity implements SurfaceHolder.Ca
     public volatile boolean gameRunning;
 
     ExecutorService pool = Executors.newFixedThreadPool(1);
-    GameMap gameMap;
+    Game game;
     SensorManager sensorManager;
 //    GestureDetector gestureDetector;
 
@@ -82,8 +85,8 @@ public class GameActivity extends FullScreenActivity implements SurfaceHolder.Ca
 
                 while (tempTime > UPDATE_GAME_INTERVAL) {
                     tempTime -= UPDATE_GAME_INTERVAL;
-                    gameMap.updateStatus();
-                    if (gameMap.isGameFinished()) {
+                    game.updateStatus();
+                    if (game.isGameFinished()) {
                         endGame(false);
                     }
                     runOnUiThread(updateView);
@@ -93,7 +96,7 @@ public class GameActivity extends FullScreenActivity implements SurfaceHolder.Ca
 
                 Canvas canvas = surfaceView.getHolder().lockCanvas();
                 if (canvas != null) {
-                    gameMap.updateDisplay(canvas, interpolation);
+                    game.updateDisplay(canvas, interpolation);
                     surfaceView.getHolder().unlockCanvasAndPost(canvas);
                 }
             }
@@ -152,7 +155,7 @@ public class GameActivity extends FullScreenActivity implements SurfaceHolder.Ca
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        gameMap.loadScreen(surfaceView.getWidth(), surfaceView.getHeight());
+        game.loadScreen(surfaceView.getWidth(), surfaceView.getHeight());
         holder.setFormat(PixelFormat.RGBA_8888);
         resumeGame();
         Log.i("Motion", "gamepanel resumeGame finished");
@@ -177,27 +180,27 @@ public class GameActivity extends FullScreenActivity implements SurfaceHolder.Ca
     public void loadMap () throws IOException {
 
         List<ColorBlock> blocks = new ArrayList<>();
-        List<Region> regions = new ArrayList<>();
-        List<Collidable> collidables = new ArrayList<>();
-        List<Field> fields = new ArrayList<>();
-        List<Collectable> collectables = new ArrayList<>();
+        List<ColorMap> regions = new ArrayList<>();
+        Collidables collidables = new Collidables(null);
+        Fields fields = new Fields(null);
+        Collectables collectables = new Collectables(null);
 
         float mapWidth = 800, mapHeight = 800;
         GameColor defaultColor = new GameColor(2, 2, 2);
-        Region backRegion = new Region(defaultColor);
+        ColorMap backRegion = new ColorMap(defaultColor);
         backRegion.childBlocks.add(new ColorBlock(0, 0, mapWidth, mapHeight, defaultColor));
-        gameMap = new GameMap(mapWidth, mapHeight, 400, 790);
+        game = new Game(mapWidth, mapHeight, 400, 790);
 
         blocks.add(new ColorBlock(350, 450, 100, 50, 1, 2, 2));
         blocks.add(new ColorBlock(300, 300, 50, 200, 1, 1, 2));
         blocks.add(new ColorBlock(300, 100, 200, 250, 1, 1, 2));
         blocks.add(new ColorBlock(450, 300, 50, 200, 1, 1, 2));
         blocks.add(new ColorBlock(0, 0, 800, 100, 1, 1, 1));
-        Region.setRegions(regions, blocks);
+        ColorMap.setRegions(regions, blocks);
         backRegion.neighborRegions.addAll(regions);
 
 //        Log.i("MotionRegion", regions.size() + " ");
-//        for (Region region : regions) {
+//        for (ColorMap region : regions) {
 //            for (ColorBlock block : region.childBlocks) {
 //                Log.i("MotionRegion", block.gameColor.toString());
 //            }
@@ -227,7 +230,7 @@ public class GameActivity extends FullScreenActivity implements SurfaceHolder.Ca
         collectables.add(new PaintObj(390, 370, 2, 1, 2));
         collectables.add(new PaintObj(390, 140, 2, 2, 1));
 
-        gameMap.loadStuff(backRegion, regions, collidables, fields, collectables);
+        game.loadStuff(backRegion, regions, collidables, fields, collectables);
     }
 
     public void resumeGame() {
@@ -254,7 +257,7 @@ public class GameActivity extends FullScreenActivity implements SurfaceHolder.Ca
 
     public void endGame(boolean quit) {
         pauseGame();
-        Intent returnIntent = gameMap.makeEndGameInfo();
+        Intent returnIntent = game.makeEndGameInfo();
         if (quit) {
             returnIntent.putExtra("gameStatus", false);
             returnIntent.putExtra("failMessage", "You have quitted the game");
@@ -276,9 +279,9 @@ public class GameActivity extends FullScreenActivity implements SurfaceHolder.Ca
                 break;
             case R.id.gameSurfaceView :
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    gameMap.setUserTouching(true);
+                    game.setUserTouching(true);
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    gameMap.setUserTouching(false);
+                    game.setUserTouching(false);
                 }
                 break;
         }
@@ -287,7 +290,7 @@ public class GameActivity extends FullScreenActivity implements SurfaceHolder.Ca
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        gameMap.updateBallAcceleration(event);
+        game.updateBallAcceleration(event);
     }
 
     @Override

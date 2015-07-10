@@ -1,6 +1,6 @@
 package com.motion.collectables;
 
-import com.motion.game.GameMap;
+import com.motion.game.Game;
 import com.motion.game.GameObj;
 
 public abstract class Collectable extends GameObj {
@@ -9,5 +9,5 @@ public abstract class Collectable extends GameObj {
         super(x,y,width,height);
     }
 
-    public abstract void collect (GameMap map);
+    public abstract void collect (Game map);
 }

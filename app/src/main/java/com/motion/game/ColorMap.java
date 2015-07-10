@@ -1,20 +1,18 @@
-package com.motion.region;
+package com.motion.game;
 
 import android.graphics.Canvas;
-
-import com.motion.game.Ball;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Region {
+public class ColorMap {
 
     public GameColor gameColor;
     public List<ColorBlock> childBlocks = new ArrayList<>();
-    public List<Region> neighborRegions = new ArrayList<>();
+    public List<ColorMap> neighborRegions = new ArrayList<>();
     public ColorBlock collideBlock;
 
-    public Region (GameColor gameColor) {
+    public ColorMap(GameColor gameColor) {
         this.gameColor = gameColor;
     }
 
@@ -32,7 +30,7 @@ public class Region {
         collideBlock.bounceOff(ball, lastBall);
     }
 
-    public static void setRegions (List<Region> regionList, List<ColorBlock> blockList) {
+    public static void setRegions (List<ColorMap> regionList, List<ColorBlock> blockList) {
 
         // set all block neighbor relationships
         for (int i = 0; i < blockList.size(); i++) {
@@ -47,7 +45,7 @@ public class Region {
         // form the regions from the blocks
         for (ColorBlock block : blockList) {
             if (!block.added) {
-                Region region = new Region(block.gameColor);
+                ColorMap region = new ColorMap(block.gameColor);
                 region.childBlocks.add(block);
                 block.added = true;
                 region.traverse(block);
@@ -77,13 +75,13 @@ public class Region {
     }
 
 
-    public void onColorChange (List<Region> regionList) {
+    public void onColorChange (List<ColorMap> regionList) {
 
         for (ColorBlock block : childBlocks)
             block.resetColor(gameColor);
 
         for (int i = 0; i < neighborRegions.size(); i++) {
-            Region merged = neighborRegions.get(i);
+            ColorMap merged = neighborRegions.get(i);
             if (gameColor.equals(merged.gameColor)) {
                 // remove from list
                 neighborRegions.remove(merged);
@@ -92,7 +90,7 @@ public class Region {
 
                 // redirect all neighbor connection to the matching region
                 // update neighbor regions of current region
-                for (Region neighbor : merged.neighborRegions) {
+                for (ColorMap neighbor : merged.neighborRegions) {
                     if (neighbor != this) {
                         neighbor.neighborRegions.remove(merged);
                         if (!neighborRegions.contains(neighbor)) {
@@ -108,7 +106,7 @@ public class Region {
         }
     }
 
-    public boolean isNeighbor (Region region) {
+    public boolean isNeighbor (ColorMap region) {
         for (ColorBlock block : childBlocks) {
             for (ColorBlock neighbor : block.neighborBlocks) {
                 if (region.childBlocks.contains(neighbor))

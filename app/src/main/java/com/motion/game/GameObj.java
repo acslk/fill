@@ -68,13 +68,13 @@ public abstract class GameObj {
     }
 
     protected Rect getOffsetRect (float mapX, float mapY) {
-        return new Rect(GameMap.px(x + mapX), GameMap.px(y + mapY),
-                GameMap.px(x + width + mapX), GameMap.px(y + height + mapY));
+        return new Rect(Game.px(x + mapX), Game.px(y + mapY),
+                Game.px(x + width + mapX), Game.px(y + height + mapY));
     }
 
     protected RectF getOffsetRectF (float mapX, float mapY) {
-        return new RectF(GameMap.px(x + mapX), GameMap.px(y + mapY),
-                GameMap.px(x + width + mapX), GameMap.px(y + height + mapY));
+        return new RectF(Game.px(x + mapX), Game.px(y + mapY),
+                Game.px(x + width + mapX), Game.px(y + height + mapY));
     }
 
     public abstract void draw(Canvas canvas, float mapX, float mapY, float interpoation);

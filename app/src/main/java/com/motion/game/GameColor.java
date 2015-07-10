@@ -1,4 +1,4 @@
-package com.motion.region;
+package com.motion.game;
 
 import android.graphics.Color;
 

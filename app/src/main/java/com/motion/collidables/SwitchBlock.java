@@ -6,7 +6,7 @@ import android.graphics.drawable.Drawable;
 
 import com.motion.R;
 import com.motion.game.Ball;
-import com.motion.game.GameMap;
+import com.motion.game.Game;
 
 public class SwitchBlock extends Collidable {
 
@@ -31,9 +31,9 @@ public class SwitchBlock extends Collidable {
     }
 
     @Override
-    public void update(GameMap gameMap) {
+    public void update(Game game) {
         if (collided)
-            gameMap.failGame("The ball touched the red block");
+            game.failGame("The ball touched the red block");
         if (switching) {
             if (!doomMode)
                 solidAlpha -= 5;

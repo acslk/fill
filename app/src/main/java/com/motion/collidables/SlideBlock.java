@@ -6,7 +6,7 @@ import android.graphics.drawable.Drawable;
 
 import com.motion.R;
 import com.motion.game.Ball;
-import com.motion.game.GameMap;
+import com.motion.game.Game;
 
 public class SlideBlock extends Collidable {
 
@@ -58,33 +58,33 @@ public class SlideBlock extends Collidable {
     }
 
     @Override
-    public void update(GameMap gameMap) {
+    public void update(Game game) {
         x += vx;
         y += vy;
-        if (slideDirection != Direction.NULL) {
-            for (Collidable c : gameMap.collidables) {
-                if (c != this && c.containsRectObj(this)) {
-                    switch (slideDirection) {
-                        case LEFT:
-                            x = c.x + c.width;
-                            break;
-                        case RIGHT:
-                            x = c.x - width;
-                            break;
-                        case TOP:
-                            y = c.y + c.height;
-                            break;
-                        case BOTTOM:
-                            y = c.y - height;
-                            break;
-                    }
-                    slideDirection = Direction.NULL;
-                    vx = 0;
-                    vy = 0;
-                    break;
-                }
-            }
-        }
+//        if (slideDirection != Direction.NULL) {
+//            for (Collidable c : game.collidables) {
+//                if (c != this && c.containsRectObj(this)) {
+//                    switch (slideDirection) {
+//                        case LEFT:
+//                            x = c.x + c.width;
+//                            break;
+//                        case RIGHT:
+//                            x = c.x - width;
+//                            break;
+//                        case TOP:
+//                            y = c.y + c.height;
+//                            break;
+//                        case BOTTOM:
+//                            y = c.y - height;
+//                            break;
+//                    }
+//                    slideDirection = Direction.NULL;
+//                    vx = 0;
+//                    vy = 0;
+//                    break;
+//                }
+//            }
+//        }
     }
 
     @Override

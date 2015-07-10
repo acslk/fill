@@ -19,7 +19,7 @@ import com.motion.fields.HighVField;
 import com.motion.fields.LowVField;
 import com.motion.fields.NoGravityField;
 import com.motion.game.Ball;
-import com.motion.game.GameMap;
+import com.motion.game.Game;
 
 public class TitleActivity extends FullScreenActivity {
 
@@ -46,7 +46,7 @@ public class TitleActivity extends FullScreenActivity {
 
     public static void loadResources (Context context) {
 
-        GameMap.loadResource(context);
+        Game.loadResource(context);
         Ball.loadResrouce(context);
 
         SolidBlock.loadResource(context);

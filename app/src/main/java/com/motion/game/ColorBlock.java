@@ -1,10 +1,8 @@
-package com.motion.region;
+package com.motion.game;
 
 import android.graphics.Canvas;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
-
-import com.motion.game.GameObj;
 
 import java.util.ArrayList;
 import java.util.List;

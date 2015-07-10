@@ -5,8 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import com.motion.R;
-import com.motion.game.GameMap;
-import com.motion.region.GameColor;
+import com.motion.game.Game;
+import com.motion.game.GameColor;
 
 public class PaintObj extends Collectable {
 
@@ -26,7 +26,7 @@ public class PaintObj extends Collectable {
     }
 
     @Override
-    public void collect(GameMap map) {
+    public void collect(Game map) {
         map.onChangeColor(paintColor);
         exist = false;
     }
