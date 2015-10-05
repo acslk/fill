@@ -4,16 +4,17 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
-public abstract class GameObj {
+public abstract class MovingObj {
 
     public enum Direction {
         LEFT, RIGHT, TOP, BOTTOM, NULL
     }
 
     public float x, y, width, height;
+    public float vx = 0, vy = 0;
     public boolean exist = true;
 
-    public GameObj (float x, float y, float width, float height) {
+    public MovingObj(float x, float y, float width, float height) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -33,38 +34,17 @@ public abstract class GameObj {
         return true;
     }
 
-    public boolean containsRectObj (GameObj gameObj) {
-        if (gameObj.x + gameObj.width <= x) {
+    public boolean containsRectObj (MovingObj movingObj) {
+        if (movingObj.x + movingObj.width <= x) {
             return false;
-        } else if (gameObj.x >= x + width) {
+        } else if (movingObj.x >= x + width) {
             return false;
-        } else if (gameObj.y + gameObj.height <= y) {
+        } else if (movingObj.y + movingObj.height <= y) {
             return false;
-        } else if (gameObj.y >= y + height) {
+        } else if (movingObj.y >= y + height) {
             return false;
         }
         return true;
-    }
-
-    public Direction bounceOff (Ball ball, Ball lastBall) {
-        if (lastBall.x + lastBall.size <= x) {
-            ball.vx = -ball.vx * ball.bounce;
-            ball.x = x - ball.size;
-            return Direction.LEFT;
-        } else if (lastBall.x >= x + width) {
-            ball.vx = -ball.vx * ball.bounce;
-            ball.x = x + width;
-            return Direction.RIGHT;
-        } else if (lastBall.y + lastBall.size <= y) {
-            ball.vy = -ball.vy * ball.bounce;
-            ball.y = y - lastBall.size;
-            return Direction.TOP;
-        } else if (lastBall.y >= y + height) {
-            ball.vy = -ball.vy * ball.bounce;
-            ball.y = y + height;
-            return Direction.BOTTOM;
-        }
-        return Direction.NULL;
     }
 
     protected Rect getOffsetRect (float mapX, float mapY) {

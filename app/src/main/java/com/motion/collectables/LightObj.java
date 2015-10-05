@@ -17,7 +17,7 @@ public class LightObj extends Collectable {
     private GameColor lightColor;
     private Paint paint;
 
-    public LightObj(float x, float y, int r, int g, int b) {
+    public LightObj(int x, int y, int r, int g, int b) {
         super(x,y,Width, Height);
         lightColor = new GameColor(r, g, b);
         paint = new Paint();
@@ -26,8 +26,7 @@ public class LightObj extends Collectable {
 
     @Override
     public void collect(Game map) {
-        map.currentRegion.gameColor.addLight(lightColor);
-        map.currentRegion.onColorChange(map.regions);
+//        map.onChangeColor(lightColor);
         exist = false;
     }
 

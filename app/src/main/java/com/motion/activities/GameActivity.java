@@ -19,24 +19,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.motion.R;
-import com.motion.collectables.Collectable;
 import com.motion.collectables.PaintObj;
-import com.motion.collidables.Collidable;
 import com.motion.collidables.FragileBlock;
-import com.motion.collidables.SlideBlock;
 import com.motion.collidables.SolidBlock;
 import com.motion.collidables.SwitchBlock;
 import com.motion.fields.DirectionField;
-import com.motion.fields.Field;
 import com.motion.fields.NoGravityField;
 import com.motion.fragments.PauseDialogFragment;
+import com.motion.game.Block;
 import com.motion.game.Collectables;
 import com.motion.game.Collidables;
 import com.motion.game.ColorMap;
 import com.motion.game.Fields;
 import com.motion.game.Game;
-import com.motion.game.GameObj;
-import com.motion.game.ColorBlock;
+import com.motion.game.MovingObj;
 import com.motion.game.GameColor;
 
 import java.io.IOException;
@@ -89,13 +85,13 @@ public class GameActivity extends FullScreenActivity implements SurfaceHolder.Ca
                     if (game.isGameFinished()) {
                         endGame(false);
                     }
-                    runOnUiThread(updateView);
                 }
 
                 interpolation = tempTime / UPDATE_GAME_INTERVAL;
 
                 Canvas canvas = surfaceView.getHolder().lockCanvas();
                 if (canvas != null) {
+                    runOnUiThread(updateView);
                     game.updateDisplay(canvas, interpolation);
                     surfaceView.getHolder().unlockCanvasAndPost(canvas);
                 }
@@ -179,58 +175,36 @@ public class GameActivity extends FullScreenActivity implements SurfaceHolder.Ca
 
     public void loadMap () throws IOException {
 
-        List<ColorBlock> blocks = new ArrayList<>();
-        List<ColorMap> regions = new ArrayList<>();
         Collidables collidables = new Collidables(null);
         Fields fields = new Fields(null);
         Collectables collectables = new Collectables(null);
 
-        float mapWidth = 800, mapHeight = 800;
+        int mapWidth = 100, mapHeight = 100;
         GameColor defaultColor = new GameColor(2, 2, 2);
-        ColorMap backRegion = new ColorMap(defaultColor);
-        backRegion.childBlocks.add(new ColorBlock(0, 0, mapWidth, mapHeight, defaultColor));
-        game = new Game(mapWidth, mapHeight, 400, 790);
+        ColorMap colorMap = new ColorMap(mapWidth, mapHeight, defaultColor);
+        game = new Game(mapWidth, mapHeight, 40, 70);
 
-        blocks.add(new ColorBlock(350, 450, 100, 50, 1, 2, 2));
-        blocks.add(new ColorBlock(300, 300, 50, 200, 1, 1, 2));
-        blocks.add(new ColorBlock(300, 100, 200, 250, 1, 1, 2));
-        blocks.add(new ColorBlock(450, 300, 50, 200, 1, 1, 2));
-        blocks.add(new ColorBlock(0, 0, 800, 100, 1, 1, 1));
-        ColorMap.setRegions(regions, blocks);
-        backRegion.neighborRegions.addAll(regions);
+        colorMap.addRect(40, 50, 10, 5, new GameColor(1, 2, 2));
+        colorMap.addRect(30, 30, 5, 20, new GameColor(1, 1, 2));
+        colorMap.addRect(30, 10, 20, 25, new GameColor(1, 1, 2));
+        colorMap.addRect(45, 30, 5, 20, new GameColor(1, 1, 2));
+        colorMap.addRect(0, 0, 100, 10, new GameColor(1, 1, 1));
 
-//        Log.i("MotionRegion", regions.size() + " ");
-//        for (ColorMap region : regions) {
-//            for (ColorBlock block : region.childBlocks) {
-//                Log.i("MotionRegion", block.gameColor.toString());
-//            }
-//        }
+        collidables.add(new SwitchBlock(20, 10, 10, 10, 1));
+        collidables.add(new FragileBlock(0, 45, 30, 5));
+        collidables.add(new SolidBlock(50, 25, 10, 10));
+//        collidables.add(new SlideBlock(600, 250, 100, 100, 1));
+        collidables.add(new SolidBlock(70, 25, 10, 10));
 
-//        collidables.add(new SolidBlock(50, 50, 100, 100));
-//        collidables.add(new SlideBlock(50, 400, 400, 100, 1));
-//        collidables.add(new FragileBlock(50, 600, 200, 200));
-//        collidables.add(new DoomBlock(400, 500, 100, 100));
-//        collidables.add(new SwitchBlock(200, 50, 100, 100, 1));
-//        fields.add(new DirectionField(400, 50, 150, 150, GameObj.Direction.BOTTOM));
-//        fields.add(new NoGravityField(400, 250, 100, 100));
-//        collectables.add(new PaintObj(100, 200, 2, 2, 1));
-//        collectables.add(new PaintObj(20, 200, 2, 1, 2));
-//        collectables.add(new PaintObj(680, 0, 1, 2, 2));
+        fields.add(new NoGravityField(0, 20, 30, 35));
+        fields.add(new DirectionField(50, 40, 30, 10, MovingObj.Direction.BOTTOM));
 
-        collidables.add(new SwitchBlock(200, 100, 100, 100, 1));
-        collidables.add(new FragileBlock(0, 450, 300, 50));
-        collidables.add(new SolidBlock(500, 250, 100, 100));
-        collidables.add(new SlideBlock(600, 250, 100, 100, 1));
-        collidables.add(new SolidBlock(700, 250, 100, 100));
+        collectables.add(new PaintObj(10, 15, 1, 2, 2));
+        collectables.add(new PaintObj(40, 35, 2, 1, 2));
+        collectables.add(new PaintObj(40, 15, 2, 2, 1));
+        collectables.add(new PaintObj(60, 70, 2, 2, 1));
 
-        fields.add(new NoGravityField(0, 100, 300, 350));
-        fields.add(new DirectionField(500, 400, 300, 100, GameObj.Direction.BOTTOM));
-
-        collectables.add(new PaintObj(100, 140, 1, 2, 2));
-        collectables.add(new PaintObj(390, 370, 2, 1, 2));
-        collectables.add(new PaintObj(390, 140, 2, 2, 1));
-
-        game.loadStuff(backRegion, regions, collidables, fields, collectables);
+        game.loadStuff(colorMap, collidables, fields, collectables);
     }
 
     public void resumeGame() {

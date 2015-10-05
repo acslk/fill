@@ -23,6 +23,10 @@ public class GameColor {
         this.b = bound(b);
     }
 
+    public GameColor (GameColor c) {
+        this(c.r, c.g, c.b);
+    }
+
     public int getBackgroundColor () {
         return Color.rgb(backR[r], backG[g], backB[b]);
     }

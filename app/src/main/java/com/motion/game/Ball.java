@@ -10,14 +10,14 @@ import com.motion.R;
 import com.motion.Utils;
 import com.motion.effects.ParticleGroup;
 
-public class Ball extends GameObj {
+public class Ball extends MovingObj {
 
     // Constants
-    public static final float Default_ACCELERATION_DIV_FACTOR = 100;
+    public static final float Default_ACCELERATION_DIV_FACTOR = 1000;
     public static final float Default_ACCELERATION_Y_OFFSET = 1f;
-    public static final float Default_MAXA = 0.5f;
-    public static final float Default_MINA = 0.05f;
-    public static final float Default_MAXV = 7;
+    public static final float Default_MAXA = 0.05f;
+    public static final float Default_MINA = 0.005f;
+    public static final float Default_MAXV = 0.7f;
     public static final float Default_BOUNCE = 0.8f;
     public static final float Default_FRICTION = 0.02f;
 
@@ -28,7 +28,6 @@ public class Ball extends GameObj {
     public float ax = 0, ay = 0;
     public float dirx = 0, diry = 0;
     public float maxA = Default_MAXA, minA = Default_MINA;
-    public float vx = 0, vy = 0;
     public float maxV = Default_MAXV;
 
     public boolean frictionEnabled;
@@ -62,6 +61,14 @@ public class Ball extends GameObj {
         super(ball.x, ball.y, ball.size, ball.size);
         this.size = ball.size;
     }
+
+    public void bounceX() {
+        vx *= -bounce;
+    }
+
+    public void bounceY() {
+        vy *= -bounce;
+    }
     
     public void updateAcceleration (SensorEvent event) {
 
@@ -76,7 +83,6 @@ public class Ball extends GameObj {
         angley = Utils.setBetween(angley * 3, Math.PI/2, -Math.PI/2);
 
         long diff = System.nanoTime() - time;
-        Log.i("MotionAcc", anglex + " " + ax + " " + angley + " " + ay + " " + diff);
 
         ax = (float)(Math.sin(anglex) * 9.81 / Default_ACCELERATION_DIV_FACTOR);
         ay = (float)(Math.sin(angley) * 9.81 / Default_ACCELERATION_DIV_FACTOR);
@@ -106,11 +112,9 @@ public class Ball extends GameObj {
         vx += ax;
         vy += ay;
 
-        Log.i("Dir", dirx + " " + diry);
-
         if (boost) {
-            vx += dirx / 10;
-            vy += diry / 10;
+            vx += dirx / 100;
+            vy += diry / 100;
         }
 
         if (frictionEnabled) {

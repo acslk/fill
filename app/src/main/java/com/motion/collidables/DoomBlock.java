@@ -13,7 +13,7 @@ public class DoomBlock extends Collidable {
     private static Drawable baseImage;
     private boolean collided = false;
 
-    public DoomBlock(float x, float y, float width, float height) {
+    public DoomBlock(int x, int y, int width, int height) {
         super(x,y,width,height);
     }
 

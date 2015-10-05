@@ -2,11 +2,12 @@ package com.motion.collidables;
 
 import com.motion.game.Ball;
 import com.motion.game.Game;
-import com.motion.game.GameObj;
+import com.motion.game.MovingObj;
+import com.motion.game.StaticObj;
 
-public abstract class Collidable extends GameObj {
+public abstract class Collidable extends StaticObj {
 
-    public Collidable (float x, float y, float width, float height) {
+    public Collidable (int x, int y, int width, int height) {
         super(x,y,width,height);
     }
 

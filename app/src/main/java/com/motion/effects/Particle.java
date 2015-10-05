@@ -4,9 +4,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-import com.motion.game.GameObj;
+import com.motion.game.MovingObj;
 
-public class Particle extends GameObj{
+public class Particle extends MovingObj {
 
     Paint paint;
     float vx, vy;

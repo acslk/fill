@@ -18,7 +18,7 @@ public class PaintObj extends Collectable {
     private Paint paint;
 
     // TODO subtractive coloring has different primary colors
-    public PaintObj(float x, float y, int r, int g, int b) {
+    public PaintObj(int x, int y, int r, int g, int b) {
         super(x,y,Width, Height);
         paintColor = new GameColor(r, g, b);
         paint = new Paint();
@@ -27,7 +27,7 @@ public class PaintObj extends Collectable {
 
     @Override
     public void collect(Game map) {
-        map.onChangeColor(paintColor);
+        map.onChangeColor(getX(), getY(), paintColor);
         exist = false;
     }
 

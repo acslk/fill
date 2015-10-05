@@ -11,7 +11,7 @@ import com.motion.game.Game;
 public class ToggleField extends Field {
     private static Drawable baseImage;
 
-    public ToggleField (float x, float y, float width, float height) {
+    public ToggleField (int x, int y, int width, int height) {
         super(x, y, width, height);
     }
 
@@ -23,8 +23,7 @@ public class ToggleField extends Field {
 
     @Override
     public void draw(Canvas canvas, float mapX, float mapY, float interpoation) {
-        baseImage.setBounds(Game.px(x + mapX), Game.px(y + mapY),
-                Game.px(x + width + mapX), Game.px(y + height + mapY));
+        baseImage.setBounds(getOffsetRect(mapX, mapY));
         baseImage.draw(canvas);
     }
 

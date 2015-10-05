@@ -11,7 +11,7 @@ public class SolidBlock extends Collidable {
 
     private static Drawable baseImage;
 
-    public SolidBlock(float x, float y, float width, float height) {
+    public SolidBlock(int x, int y, int width, int height) {
         super(x,y,width,height);
     }
 

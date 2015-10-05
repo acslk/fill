@@ -9,13 +9,10 @@ import android.hardware.SensorEvent;
 import android.util.Log;
 
 import com.motion.R;
-import com.motion.collectables.Collectable;
-import com.motion.collidables.Collidable;
-import com.motion.fields.Field;
 
-import java.util.Iterator;
-import java.util.List;
-
+/**
+ * Contains all related objects and logic for one level of game
+ */
 public class Game {
 
     private static float scale; // conversion factor from map unit to pixel
@@ -33,9 +30,7 @@ public class Game {
 
     // map objects
     public final float width, height; // in map unit
-    public ColorMap currentRegion;
-    public ColorMap backRegion;
-    public List<ColorMap> regions;
+    public ColorMap colorMap;
 
     private Collidables collidables;
     private Fields fields;
@@ -62,15 +57,13 @@ public class Game {
         foundationPaint.setColor(foundationColor);
     }
 
-    public void loadStuff (ColorMap backRegion, List<ColorMap> regions, Collidables collidables,
+    public void loadStuff (ColorMap colorMap, Collidables collidables,
                            Fields fields, Collectables collectables) {
-        this.backRegion = backRegion;
-        this.regions = regions;
+        this.colorMap = colorMap;
+        colorMap.setBallPos(ball);
         this.collidables = collidables;
         this.fields = fields;
         this.collectables = collectables;
-
-        currentRegion = backRegion;
     }
 
     public void loadScreen(float screenWidth, float screenHeight) {
@@ -99,11 +92,7 @@ public class Game {
         ball.updateVelocity();
         ball.updateDisplacement();
         collidables.update(this, ball, lastBall);
-
-        for (ColorMap region : regions) {
-            if (region.containsBall(ball))
-                region.collide(ball, lastBall);
-        }
+        colorMap.update(ball, lastBall);
 
         ball.interactBound(width, height);
         lastBall.getCopy(ball);
@@ -112,7 +101,6 @@ public class Game {
         setDisplayPosition();
 
         long diff = System.nanoTime() - time;
-        Log.i("MotionStatus", " " + diff);
     }
 
     public synchronized void setDisplayPosition () {
@@ -147,26 +135,26 @@ public class Game {
                     foundationPaint);
         }
 
+        canvas.drawColor(Color.WHITE);
+
         // draw contents
-        backRegion.onDraw(canvas, startX, startY, interpolation);
-        for (ColorMap region : regions)
-            region.onDraw(canvas, startX, startY, interpolation);
+        colorMap.onDraw(canvas, startX, startY, screenWidth, screenHeight, interpolation);
         fields.draw(canvas, startX, startY, interpolation);
         ball.draw(canvas, startX, startY, interpolation);
         collectables.draw(canvas, startX, startY, interpolation);
         collidables.draw(canvas, startX, startY, interpolation);
 
         long diff = System.nanoTime() - time;
-        Log.i("MotionDisplay", " " + diff);
     }
 
-    public synchronized void onChangeColor(GameColor paintColor) {
-        currentRegion.gameColor.addPaint(paintColor);
-        currentRegion.onColorChange(regions);
-        if (regions.isEmpty()) {
-            gameFinished = true;
-            levelPassed = true;
-        }
+    public synchronized void onChangeColor(int x, int y, GameColor paintColor) {
+//        currentRegion.gameColor.addPaint(paintColor);
+//        currentRegion.changeColor(regions);
+//        if (regions.isEmpty()) {
+//            gameFinished = true;
+//            levelPassed = true;
+//        }
+        colorMap.changeColor(x, y, paintColor);
     }
 
     public boolean isUserTouching () {
@@ -190,6 +178,10 @@ public class Game {
         gameFinished = true;
         levelPassed = false;
         failMessage = message;
+    }
+
+    public boolean inCurrentScreen (StaticObj obj) {
+        return true;
     }
 
     public boolean isGameFinished () {

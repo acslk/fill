@@ -7,13 +7,14 @@ import android.graphics.drawable.Drawable;
 import com.motion.R;
 import com.motion.game.Ball;
 import com.motion.game.Game;
+import com.motion.game.MovingObj;
 
 public class DirectionField extends Field {
 
     private static Drawable baseImage;
-    Direction direction;
+    MovingObj.Direction direction;
 
-    public DirectionField (float x, float y, float width, float height, Direction direction) {
+    public DirectionField (int x, int y, int width, int height, MovingObj.Direction direction) {
         super(x, y, width, height);
         this.direction = direction;
     }
@@ -38,8 +39,7 @@ public class DirectionField extends Field {
 
     @Override
     public void draw(Canvas canvas, float mapX, float mapY, float interpoation) {
-        baseImage.setBounds(Game.px(x + mapX), Game.px(y + mapY),
-                Game.px(x + width + mapX), Game.px(y + height + mapY));
+        baseImage.setBounds(getOffsetRect(mapX, mapY));
         baseImage.draw(canvas);
     }
 

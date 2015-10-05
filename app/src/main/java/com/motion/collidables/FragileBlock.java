@@ -8,6 +8,7 @@ import android.util.Log;
 import com.motion.R;
 import com.motion.game.Ball;
 import com.motion.game.Game;
+import com.motion.game.MovingObj;
 
 public class FragileBlock extends Collidable {
 
@@ -16,7 +17,7 @@ public class FragileBlock extends Collidable {
     boolean fading = false;
     int alpha = 255;
 
-    public FragileBlock(float x, float y, float width, float height) {
+    public FragileBlock(int x, int y, int width, int height) {
         super(x, y, width, height);
     }
 
@@ -24,14 +25,13 @@ public class FragileBlock extends Collidable {
     public void collide (Ball ball, Ball lastBall) {
         float ballvx = ball.vx;
         float ballvy = ball.vy;
-        Direction direction = bounceOff(ball, lastBall);
+        MovingObj.Direction direction = bounceOff(ball, lastBall);
         switch (direction) {
             case LEFT:
                 if (ballvx >= THRESHOLD)
                     fading = true;
                 break;
             case RIGHT:
-                Log.i("Motion", lastBall.vx + " " + -THRESHOLD);
                 if (ballvx <= -THRESHOLD)
                     fading = true;
                 break;

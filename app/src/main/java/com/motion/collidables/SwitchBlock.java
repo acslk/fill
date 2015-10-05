@@ -18,7 +18,7 @@ public class SwitchBlock extends Collidable {
     private int switchCounter = 0;
     private int solidAlpha = 255;
 
-    public SwitchBlock(float x, float y, float width, float height, int switchInterval) {
+    public SwitchBlock(int x, int y, int width, int height, int switchInterval) {
         super(x,y,width,height);
         this.switchInterval = switchInterval;
     }

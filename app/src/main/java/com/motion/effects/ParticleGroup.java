@@ -26,11 +26,11 @@ public class ParticleGroup {
     }
 
     public void update(float x, float y) {
-        float vx = (float) Math.random() * 2 - 1;
-        float vy = (float) Math.random() * 2 - 1;
+        float vx = (float) Math.random() * 0.2f - 0.1f;
+        float vy = (float) Math.random() * 0.2f - 0.1f;
         count++;
         if (count > interval) {
-            particles.add(new Particle(x + xOffset, y + yOffset, (float) Math.random() * 5 + 2, vx, vy));
+            particles.add(new Particle(x + xOffset, y + yOffset, (float) Math.random() * 0.5f + 0.2f, vx, vy));
             count = 0;
         }
         while (particles.size() > particleNo)
